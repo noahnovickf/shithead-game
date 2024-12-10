@@ -1,0 +1,45 @@
+.main-board {
+  background: green;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.gameboard {
+  text-align: center;
+  padding: 20px;
+}
+
+.card-container {
+  position: relative;
+  width: fit-content;
+  margin-bottom: 30px; /* Center the container */
+}
+
+.face-down-row {
+  display: flex;
+  justify-content: center; /* Align cards in a row */
+  gap: 10px; /* Space between cards */
+  position: relative; /* For overlap positioning */
+  z-index: 1; /* Ensure it's behind face-up cards */
+}
+
+.face-up-row {
+  display: flex;
+  justify-content: center; /* Align cards in a row */
+  gap: 10px; /* Space between cards */
+  position: absolute; /* Allows overlap with face-down */
+  top: 30px; /* Overlap face-down row by 30px */
+  left: 0;
+  z-index: 2; /* Ensure it's above face-down cards */
+  margin-bottom: 30px;
+}
+
+.hand {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Spacing between cards */
+  margin-top: 20px;
+}
