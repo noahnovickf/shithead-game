@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { io } from "socket.io-client";
+import { Phases } from "../phases";
 
 // Initial State
 const initialState = {
@@ -7,7 +8,7 @@ const initialState = {
   currentTurn: null, // Track whose turn it is
   cardPile: [], // Cards played so far
   deck: [], // Remaining cards in the deck
-  phase: "start",
+  phase: Phases.START, // Game phase
 };
 
 // Actions
@@ -98,7 +99,7 @@ const gameReducer = (state, action) => {
       return {
         ...state,
         players: updatedPlayers,
-        phase: allPlayersReady ? "playing" : state.phase, // Move to "playing" phase if both players are ready
+        phase: allPlayersReady ? Phases.PLAYING : state.phase, // Move to "playing" phase if both players are ready
       };
     }
     case actions.UPDATE_GAME_STATE:

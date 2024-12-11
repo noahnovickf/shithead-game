@@ -38,7 +38,7 @@ const App = () => {
     <div className="main-board">
       <h1>Shithead Game</h1>
       {!user && <button onClick={() => handleConnect()}>Connect</button>}
-      {user && hasEnoughPlayers && !hasDealt && (
+      {user && hasEnoughPlayers && state.phase === "start" && (
         <button
           onClick={() => {
             handleGameStart();

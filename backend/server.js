@@ -83,8 +83,10 @@ io.on("connection", (socket) => {
     player.hand = newHand; // Update player's hand
     // Add played card to the cardPile
     gameState.cardPile.push(card);
-    gameState.currentTurn =
-      gameState.players[(playerIndex + 1) % gameState.players.length].id;
+    if (card.rank !== "j" || card.rank !== "10") {
+      gameState.currentTurn =
+        gameState.players[(playerIndex + 1) % gameState.players.length].id;
+    }
     // Emit the updated game state to all clients
     io.emit("gameStateUpdate", gameState);
   });

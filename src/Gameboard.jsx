@@ -4,6 +4,9 @@ import HiddenCard from "./HiddenCard";
 import "./gameboard.css";
 import { useState } from "react";
 import { socket } from "./App";
+import { isCardPlayable } from "./isCardPlayable";
+import SwapCardButtons from "./SwapCardButtons";
+import { Phases } from "./phases";
 
 const Gameboard = ({ user }) => {
   const { state, dispatch } = useGameContext();
@@ -11,16 +14,8 @@ const Gameboard = ({ user }) => {
   const [selectedHandCard, setSelectedHandCard] = useState(null);
   const [selectedFaceUpCard, setSelectedFaceUpCard] = useState(null);
 
-  const handleReadyClick = () => {
-    dispatch({
-      type: "SET_READY",
-      payload: { userId: user },
-    });
-    socket.emit("ready", user);
-  };
-
   const handleCardClick = (card, location) => {
-    if (state.phase === "swap") {
+    if (state.phase === Phases.SWAP) {
       if (location === "hand") {
         setSelectedHandCard(
           selectedHandCard?.rank === card.rank &&
@@ -36,38 +31,35 @@ const Gameboard = ({ user }) => {
             : card
         );
       }
-    } else if (state.phase === "playing" && state.currentTurn === user) {
-      dispatch({
-        type: "PLAY_CARD",
-        payload: { user, card },
-      });
-      socket.emit("playCard", { userId: user, card });
+    } else if (state.phase === Phases.PLAYING && state.currentTurn === user) {
+      // Check if the card is playable
+      const topCard = state.cardPile[state.cardPile.length - 1];
+      if (isCardPlayable(card, topCard)) {
+        dispatch({
+          type: "PLAY_CARD",
+          payload: { user, card },
+        });
+        socket.emit("playCard", { userId: user, card });
+      } else {
+        alert("You can't play this card");
+      }
     }
 
     return;
   };
 
-  const performSwap = (handCard, faceUpCard) => {
-    dispatch({
-      type: "SWAP_CARDS",
-      payload: { userId: user, handCard, faceUpCard },
-    });
-    setSelectedHandCard(null);
-    setSelectedFaceUpCard(null);
-  };
-
   return (
     <div className="gameboard">
-      {user ? <p>Your ID: {user}</p> : <p>Waiting for connection...</p>}
-      {state.phase === "swap" && (
-        <div>
-          <button
-            onClick={() => performSwap(selectedHandCard, selectedFaceUpCard)}
-          >
-            Swap Cards
-          </button>
-          <button onClick={handleReadyClick}>Ready!</button>
-        </div>
+      {state.phase === Phases.START &&
+        (user ? <p>Your ID: {user}</p> : <p>Waiting for connection...</p>)}
+      {state.phase === Phases.SWAP && (
+        <SwapCardButtons
+          user={user}
+          selectedHandCard={selectedHandCard}
+          selectedFaceUpCard={selectedFaceUpCard}
+          setSelectedHandCard={setSelectedHandCard}
+          setSelectedFaceUpCard={setSelectedFaceUpCard}
+        />
       )}
       {player && (
         <div>
