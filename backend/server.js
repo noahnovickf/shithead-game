@@ -4,7 +4,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const gameState = require("./gameState");
-const { generateDeck, shuffle, initializeGame } = require("./utils");
+const { initializeGame, Phases } = require("./utils");
 app.use(cors());
 
 const server = http.createServer(app);
@@ -17,10 +17,12 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("A user connected", socket.id);
+  // INITIAL CONNECTION
+  console.log("CONNECTED: ", socket.id);
 
-  // connect a user and set it as the current user on the client
+  // USER CLICKS CONNECT BUTTON
   socket.on("userConnect", (data) => {
+    // SERVER SENDS BACK USER ID
     socket.emit("currentUserID", data);
     gameState.players.length < 2 &&
       gameState.players.push({
@@ -32,24 +34,78 @@ io.on("connection", (socket) => {
     io.emit("gameStateUpdate", gameState);
   });
 
+  // DEAL BUTTON CLICKED, CARDS ARE DEALT
   socket.on("gameStart", () => {
     initializeGame();
     io.emit("gameStateUpdate", gameState);
   });
 
+  // SWAP CARDS FROM FACE UP TO HAND
+  socket.on("swapCards", (payload) => {
+    const { userId, selectedHandCard, selectedFaceUpCard } = payload;
+    const player = gameState.players.find((p) => p.id === userId);
+    if (!player) return;
+
+    const handIndex = player.hand.findIndex(
+      (c) =>
+        c.rank === selectedHandCard.rank && c.suit === selectedHandCard.suit
+    );
+    const faceUpIndex = player.faceUp.findIndex(
+      (c) =>
+        c.rank === selectedFaceUpCard.rank && c.suit === selectedFaceUpCard.suit
+    );
+
+    if (handIndex !== -1 && faceUpIndex !== -1) {
+      [player.hand[handIndex], player.faceUp[faceUpIndex]] = [
+        player.faceUp[faceUpIndex],
+        player.hand[handIndex],
+      ];
+    }
+
+    io.emit("gameStateUpdate", gameState);
+  });
+
+  // READY BUTTON CLICKED
   socket.on("ready", (userId) => {
-    // Update the player state to mark them as ready
     const player = gameState.players.find((p) => p.id === userId);
     if (player) {
       player.ready = true;
     }
-
-    // Check if both players are ready and change the phase to "playing"
     const allPlayersReady = gameState.players.every((p) => p.ready);
 
     if (allPlayersReady) {
-      gameState.phase = "playing";
-      gameState.currentTurn = gameState.players[0].id;
+      gameState.phase = Phases.PLAYING;
+
+      const firstPlayer = gameState.players.find((p) =>
+        p.hand.some((c) => c.rank === "2")
+      );
+      if (firstPlayer) {
+        gameState.currentTurn = firstPlayer.id;
+      } else {
+        const ranks = [
+          "2",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "j",
+          "q",
+          "k",
+          "a",
+        ];
+        for (let i = 0; i < ranks.length; i++) {
+          const player = gameState.players.find((p) =>
+            p.hand.some((c) => c.rank === ranks[i])
+          );
+          if (player) {
+            gameState.currentTurn = player.id;
+            break;
+          }
+        }
+      }
       io.emit("gameStateUpdate", gameState);
     }
   });
@@ -119,7 +175,7 @@ io.on("connection", (socket) => {
     io.emit("gameStateUpdate", gameState);
   });
 
-  console.log(gameState.players);
+  console.log("PLAYERS: ", gameState.players);
 
   socket.on("clearGame", () => {
     gameState.players = [];

@@ -24,36 +24,6 @@ const actions = {
 // Reducer
 const gameReducer = (state, action) => {
   switch (action.type) {
-    case actions.SWAP_CARDS: {
-      const { userId, handCard, faceUpCard } = action.payload;
-      const playerIndex = state.players.findIndex(
-        (player) => player.id === userId
-      );
-      if (playerIndex === -1) return state;
-
-      const updatedPlayers = [...state.players];
-      const player = updatedPlayers[playerIndex];
-
-      // Swap the cards
-      const handIndex = player.hand.findIndex(
-        (c) => c.rank === handCard.rank && c.suit === handCard.suit
-      );
-      const faceUpIndex = player.faceUp.findIndex(
-        (c) => c.rank === faceUpCard.rank && c.suit === faceUpCard.suit
-      );
-
-      if (handIndex !== -1 && faceUpIndex !== -1) {
-        [player.hand[handIndex], player.faceUp[faceUpIndex]] = [
-          player.faceUp[faceUpIndex],
-          player.hand[handIndex],
-        ];
-      }
-
-      return {
-        ...state,
-        players: updatedPlayers,
-      };
-    }
     case actions.PLAY_CARD: {
       const { playerId, card } = action.payload;
       const updatedPlayers = state.players.map((player) => {

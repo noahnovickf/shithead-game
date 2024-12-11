@@ -47,6 +47,7 @@ function initializeGame() {
     gameState.players[playerId].faceDown = deck.splice(0, 3); // 3 face-down cards
     gameState.players[playerId].faceUp = deck.splice(0, 3); // 3 face-up cards
     gameState.players[playerId].hand = deck.splice(0, 3); // 3 cards in hand
+    gameState.players[playerId].ready = false;
   });
 
   gameState.deck = deck; // Remaining cards for drawing
@@ -54,8 +55,13 @@ function initializeGame() {
   gameState.phase = "swap";
 }
 
+const Phases = {
+  START: "start",
+  SWAP: "swap",
+  PLAYING: "playing",
+};
+
 module.exports = {
-  generateDeck,
-  shuffle,
+  Phases,
   initializeGame,
 };

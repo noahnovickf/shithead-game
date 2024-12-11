@@ -12,9 +12,10 @@ const SwapCardButtons = ({
   const player = state.players.find((p) => p.id === user);
 
   const performSwap = (handCard, faceUpCard) => {
-    dispatch({
-      type: "SWAP_CARDS",
-      payload: { userId: user, handCard, faceUpCard },
+    socket.emit("swapCards", {
+      userId: user,
+      selectedHandCard: handCard,
+      selectedFaceUpCard: faceUpCard,
     });
     setSelectedHandCard(null);
     setSelectedFaceUpCard(null);
@@ -37,7 +38,10 @@ const SwapCardButtons = ({
         justifyContent: "space-between",
       }}
     >
-      <button onClick={() => performSwap(selectedHandCard, selectedFaceUpCard)}>
+      <button
+        onClick={() => performSwap(selectedHandCard, selectedFaceUpCard)}
+        disabled={!selectedFaceUpCard || !selectedHandCard}
+      >
         Swap Cards
       </button>
       {!player?.ready && <button onClick={handleReadyClick}>Ready!</button>}
