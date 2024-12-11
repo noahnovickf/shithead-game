@@ -33,5 +33,4 @@ const CardPile = () => {
 
 export default CardPile;
 
-// JACK ISNT SKIPPING,
-// DECK PICKUP ISNT WORKING
+// SWAP CARDS NOT STAYING, being overriden by state

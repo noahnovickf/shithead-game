@@ -86,7 +86,8 @@ io.on("connection", (socket) => {
     player.hand = newHand;
 
     gameState.cardPile.push(card);
-    if (card.rank !== "j" || card.rank !== "10") {
+    if (card.rank !== "j" && card.rank !== "10") {
+      console.log("skipturn");
       gameState.currentTurn =
         gameState.players[(playerIndex + 1) % gameState.players.length].id;
     }

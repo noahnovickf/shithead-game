@@ -83,7 +83,11 @@ const gameReducer = (state, action) => {
 
       return {
         ...state,
-        cardPile: [...state.cardPile, card], // Add played card to the cardPile
+        cardPile: [...state.cardPile, card],
+        currentTurn:
+          state.players[
+            (state.players.indexOf(playerId) + 1) % state.players.length
+          ].id,
         players: updatedPlayers, // Update the players' state
       };
     }
@@ -116,7 +120,7 @@ const gameReducer = (state, action) => {
     case actions.ADD_PLAYER:
       return {
         ...state,
-        players: [...state.players, action.payload], // Adding a new player to the players array
+        players: [...state.players, action.payload],
       };
     case actions.SET_READY: {
       const { userId } = action.payload;
