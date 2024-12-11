@@ -31,16 +31,10 @@ const Gameboard = ({ user }) => {
   };
 
   const performSwap = (handCard, faceUpCard) => {
-    // Update the game state with the swapped cards
-    console.log(handCard, faceUpCard);
     dispatch({
       type: "SWAP_CARDS",
       payload: { userId: user, handCard, faceUpCard },
     });
-
-    // // Reset selections
-    // setSelectedHandCard(null);
-    // setSelectedFaceUpCard(null);
   };
 
   return (
