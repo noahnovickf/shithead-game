@@ -1,15 +1,9 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { io } from "socket.io-client";
 
 // Initial State
 const initialState = {
-  players: {}, // Store players and their cards
+  players: [], // Store players and their cards
   currentTurn: null, // Track whose turn it is
   cardPile: [], // Cards played so far
   deck: [], // Remaining cards in the deck
@@ -21,18 +15,47 @@ const actions = {
   ADD_PLAYER: "ADD_PLAYER",
   UPDATE_GAME_STATE: "UPDATE_GAME_STATE",
   PLAY_CARD: "PLAY_CARD",
+  SWAP_CARDS: "SWAP_CARDS",
 };
 
 // Reducer
 const gameReducer = (state, action) => {
   switch (action.type) {
+    case actions.SWAP_CARDS: {
+      const { userId, handCard, faceUpCard } = action.payload;
+      console.log(state.players);
+      const playerIndex = state.players.findIndex(
+        (player) => player.id === userId
+      );
+      if (playerIndex === -1) return state;
+
+      const updatedPlayers = [...state.players];
+      const player = updatedPlayers[playerIndex];
+
+      // Swap the cards
+      const handIndex = player.hand.findIndex(
+        (c) => c.rank === handCard.rank && c.suit === handCard.suit
+      );
+      const faceUpIndex = player.faceUp.findIndex(
+        (c) => c.rank === faceUpCard.rank && c.suit === faceUpCard.suit
+      );
+
+      if (handIndex !== -1 && faceUpIndex !== -1) {
+        [player.hand[handIndex], player.faceUp[faceUpIndex]] = [
+          player.faceUp[faceUpIndex],
+          player.hand[handIndex],
+        ];
+      }
+
+      return {
+        ...state,
+        players: updatedPlayers,
+      };
+    }
     case actions.ADD_PLAYER:
       return {
         ...state,
-        players: {
-          ...state.players,
-          [action.payload.id]: action.payload,
-        },
+        players: [...state.players, action.payload], // Adding a new player to the players array
       };
     case actions.UPDATE_GAME_STATE:
       return { ...state, ...action.payload };
@@ -40,13 +63,11 @@ const gameReducer = (state, action) => {
       return {
         ...state,
         cardPile: [...state.cardPile, action.payload.card],
-        players: {
-          ...state.players,
-          [action.payload.player]: {
-            ...state.players[action.payload.player],
-            cards: action.payload.remainingCards,
-          },
-        },
+        players: state.players.map((player) =>
+          player.id === action.payload.player
+            ? { ...player, cards: action.payload.remainingCards }
+            : player
+        ),
       };
     default:
       return state;
@@ -56,21 +77,20 @@ const gameReducer = (state, action) => {
 // Create Context
 const GameContext = createContext();
 
+// Create socket connection
 const socket = io("http://localhost:3001");
+
 // Context Provider
 export const GameProvider = ({ children }) => {
-  const [dispatch] = useReducer(gameReducer, initialState);
-  const [gameState, setGameState] = useState({
-    players: [],
-    deck: [],
-    cardPile: [],
-    currentTurn: null,
-    phase: "start",
-  });
+  const [state, dispatch] = useReducer(gameReducer, initialState);
 
   useEffect(() => {
     socket.on("gameStateUpdate", (newGameState) => {
-      setGameState(newGameState);
+      // Sync the game state with the context reducer
+      dispatch({
+        type: actions.UPDATE_GAME_STATE,
+        payload: newGameState,
+      });
     });
 
     return () => {
@@ -79,7 +99,7 @@ export const GameProvider = ({ children }) => {
   }, []);
 
   return (
-    <GameContext.Provider value={{ state: gameState, dispatch, actions }}>
+    <GameContext.Provider value={{ state, dispatch, actions }}>
       {children}
     </GameContext.Provider>
   );
