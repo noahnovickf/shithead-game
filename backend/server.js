@@ -106,8 +106,8 @@ io.on("connection", (socket) => {
           }
         }
       }
-      io.emit("gameStateUpdate", gameState);
     }
+    io.emit("gameStateUpdate", gameState);
   });
 
   socket.on("playCard", (payload) => {
