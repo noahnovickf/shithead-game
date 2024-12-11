@@ -7,7 +7,7 @@ const HiddenCard = ({ rank, suit, opponent }) => {
         backgroundPosition: "center", // Centers the image
         height: opponent ? "100px" : "200px",
         width: opponent ? "75px" : "150px",
-        border: "none", // Optional: removes button border
+        border: "2px solid black", // Optional: removes button border
         borderRadius: "10px", // Optional: adds border radius
       }}
       onClick={() => {

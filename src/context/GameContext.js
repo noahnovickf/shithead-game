@@ -16,6 +16,7 @@ const actions = {
   ADD_PLAYER: "ADD_PLAYER",
   UPDATE_GAME_STATE: "UPDATE_GAME_STATE",
   PLAY_CARD: "PLAY_CARD",
+  PICKUP_DECK: "PICKUP_DECK",
   SWAP_CARDS: "SWAP_CARDS",
   SET_READY: "SET_READY",
 };
@@ -66,7 +67,10 @@ const gameReducer = (state, action) => {
           const topCard = state.cardPile[state.cardPile.length - 1];
 
           // Replace played card with top card from the cardPile (if there is a card in cardPile)
-          const newHand = topCard ? [...updatedHand, topCard] : updatedHand;
+          const newHand =
+            player.hand.length <= 3 && topCard
+              ? [...updatedHand, topCard]
+              : updatedHand;
 
           return {
             ...player,
@@ -83,6 +87,32 @@ const gameReducer = (state, action) => {
         players: updatedPlayers, // Update the players' state
       };
     }
+    case actions.PICKUP_DECK: {
+      const { playerId } = action.payload;
+      const updatedPlayers = state.players.map((player) => {
+        if (player.id === playerId) {
+          const newHand = [...player.hand, ...state.cardPile];
+
+          return {
+            ...player,
+            hand: newHand, // Update player's hand
+          };
+        }
+
+        return player;
+      });
+
+      return {
+        ...state,
+        cardPile: [], // Clear the cardPile
+        players: updatedPlayers,
+        currentTurn:
+          state.players[
+            (state.players.indexOf(playerId) + 1) % state.players.length
+          ].id,
+      };
+    }
+
     case actions.ADD_PLAYER:
       return {
         ...state,

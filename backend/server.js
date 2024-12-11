@@ -75,18 +75,45 @@ io.on("connection", (socket) => {
     // Add the top card from the cardPile to the player's hand (if exists)
     const topCard = gameState.deck[gameState.deck.length - 1];
     // remove top card from deck
-    gameState.deck.pop();
+    if (updatedHand.length < 3) {
+      gameState.deck.pop();
+    }
+    const newHand =
+      topCard && updatedHand.length < 3
+        ? [...updatedHand, topCard]
+        : updatedHand;
 
-    // Replace played card with top card from the cardPile (if there is a card in cardPile)
-    const newHand = topCard ? [...updatedHand, topCard] : updatedHand;
+    player.hand = newHand;
 
-    player.hand = newHand; // Update player's hand
-    // Add played card to the cardPile
     gameState.cardPile.push(card);
     if (card.rank !== "j" || card.rank !== "10") {
       gameState.currentTurn =
         gameState.players[(playerIndex + 1) % gameState.players.length].id;
     }
+    // Emit the updated game state to all clients
+    io.emit("gameStateUpdate", gameState);
+  });
+
+  socket.on("pickupDeck", (payload) => {
+    const { userId } = payload;
+    // Find the player in the game state
+    const playerIndex = gameState.players.findIndex(
+      (player) => player.id === userId
+    );
+
+    if (playerIndex === -1) return; // Handle the case where the player is not found
+
+    const updatedPlayers = [...gameState.players];
+    const player = updatedPlayers[playerIndex];
+
+    // add each card in the cardPile to the player's hand
+
+    player.hand = [...player.hand, ...gameState.cardPile];
+
+    gameState.cardPile = [];
+    gameState.currentTurn =
+      gameState.players[(playerIndex + 1) % gameState.players.length].id;
+
     // Emit the updated game state to all clients
     io.emit("gameStateUpdate", gameState);
   });

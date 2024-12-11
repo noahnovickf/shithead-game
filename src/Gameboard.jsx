@@ -31,7 +31,11 @@ const Gameboard = ({ user }) => {
             : card
         );
       }
-    } else if (state.phase === Phases.PLAYING && state.currentTurn === user) {
+    } else if (
+      state.phase === Phases.PLAYING &&
+      state.currentTurn === user &&
+      location === "hand"
+    ) {
       // Check if the card is playable
       const topCard = state.cardPile[state.cardPile.length - 1];
       if (isCardPlayable(card, topCard)) {
@@ -49,7 +53,17 @@ const Gameboard = ({ user }) => {
   };
 
   return (
-    <div className="gameboard">
+    <div
+      className="gameboard"
+      style={{
+        backgroundColor:
+          state.currentTurn === user && state.phase === Phases.PLAYING
+            ? "lightblue"
+            : "",
+        borderRadius: "10px",
+        margin: "24px",
+      }}
+    >
       {state.phase === Phases.START &&
         (user ? <p>Your ID: {user}</p> : <p>Waiting for connection...</p>)}
       {state.phase === Phases.SWAP && (
@@ -84,7 +98,7 @@ const Gameboard = ({ user }) => {
               ))}
             </div>
           </div>
-          <h2>Your Hand</h2>
+
           <div className="hand">
             {player.hand.map((card, i) => (
               <Card

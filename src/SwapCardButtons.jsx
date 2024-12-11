@@ -8,7 +8,8 @@ const SwapCardButtons = ({
   setSelectedFaceUpCard,
   setSelectedHandCard,
 }) => {
-  const { dispatch } = useGameContext();
+  const { state, dispatch } = useGameContext();
+  const player = state.players.find((p) => p.id === user);
 
   const performSwap = (handCard, faceUpCard) => {
     dispatch({
@@ -39,7 +40,7 @@ const SwapCardButtons = ({
       <button onClick={() => performSwap(selectedHandCard, selectedFaceUpCard)}>
         Swap Cards
       </button>
-      <button onClick={handleReadyClick}>Ready!</button>
+      {!player?.ready && <button onClick={handleReadyClick}>Ready!</button>}
     </div>
   );
 };
