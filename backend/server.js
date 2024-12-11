@@ -54,6 +54,41 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("playCard", (payload) => {
+    const { userId, card } = payload;
+
+    // Find the player in the game state
+    const playerIndex = gameState.players.findIndex(
+      (player) => player.id === userId
+    );
+
+    if (playerIndex === -1) return; // Handle the case where the player is not found
+
+    const updatedPlayers = [...gameState.players];
+    const player = updatedPlayers[playerIndex];
+
+    // Remove the played card from the player's hand
+    const updatedHand = player.hand.filter(
+      (c) => !(c.rank === card.rank && c.suit === card.suit)
+    );
+
+    // Add the top card from the cardPile to the player's hand (if exists)
+    const topCard = gameState.deck[gameState.deck.length - 1];
+    // remove top card from deck
+    gameState.deck.pop();
+
+    // Replace played card with top card from the cardPile (if there is a card in cardPile)
+    const newHand = topCard ? [...updatedHand, topCard] : updatedHand;
+
+    player.hand = newHand; // Update player's hand
+    // Add played card to the cardPile
+    gameState.cardPile.push(card);
+    gameState.currentTurn =
+      gameState.players[(playerIndex + 1) % gameState.players.length].id;
+    // Emit the updated game state to all clients
+    io.emit("gameStateUpdate", gameState);
+  });
+
   console.log(gameState.players);
 
   socket.on("clearGame", () => {

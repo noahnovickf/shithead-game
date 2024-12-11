@@ -36,7 +36,14 @@ const Gameboard = ({ user }) => {
             : card
         );
       }
+    } else if (state.phase === "playing" && state.currentTurn === user) {
+      dispatch({
+        type: "PLAY_CARD",
+        payload: { user, card },
+      });
+      socket.emit("playCard", { userId: user, card });
     }
+
     return;
   };
 

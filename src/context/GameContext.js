@@ -24,7 +24,6 @@ const gameReducer = (state, action) => {
   switch (action.type) {
     case actions.SWAP_CARDS: {
       const { userId, handCard, faceUpCard } = action.payload;
-      console.log(state.players);
       const playerIndex = state.players.findIndex(
         (player) => player.id === userId
       );
@@ -51,6 +50,36 @@ const gameReducer = (state, action) => {
       return {
         ...state,
         players: updatedPlayers,
+      };
+    }
+    case actions.PLAY_CARD: {
+      const { playerId, card } = action.payload;
+      const updatedPlayers = state.players.map((player) => {
+        if (player.id === playerId) {
+          // Remove the played card from the player's hand
+          const updatedHand = player.hand.filter(
+            (c) => !(c.rank === card.rank && c.suit === card.suit)
+          );
+
+          // Add the top card from the cardPile to the player's hand (if exists)
+          const topCard = state.cardPile[state.cardPile.length - 1];
+
+          // Replace played card with top card from the cardPile (if there is a card in cardPile)
+          const newHand = topCard ? [...updatedHand, topCard] : updatedHand;
+
+          return {
+            ...player,
+            hand: newHand, // Update player's hand
+          };
+        }
+
+        return player;
+      });
+
+      return {
+        ...state,
+        cardPile: [...state.cardPile, card], // Add played card to the cardPile
+        players: updatedPlayers, // Update the players' state
       };
     }
     case actions.ADD_PLAYER:
