@@ -4,12 +4,12 @@ import { useGameContext } from "./context/GameContext";
 const CardPile = () => {
   const { state } = useGameContext();
 
-  const hasPile = state.pile.length > 0;
+  const hasPile = state.cardPile.length > 0;
 
   return hasPile ? (
     <Card
-      suit={state.cardPile[state.cardPile.length - 1].suit}
-      rank={state.cardPile[state.cardPile.length - 1].rank}
+      suit={state.cardPile[state.cardPile?.length - 1].suit}
+      rank={state.cardPile[state.cardPile?.length - 1].rank}
     />
   ) : (
     <div

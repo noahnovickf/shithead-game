@@ -16,6 +16,7 @@ const actions = {
   UPDATE_GAME_STATE: "UPDATE_GAME_STATE",
   PLAY_CARD: "PLAY_CARD",
   SWAP_CARDS: "SWAP_CARDS",
+  SET_READY: "SET_READY",
 };
 
 // Reducer
@@ -57,6 +58,20 @@ const gameReducer = (state, action) => {
         ...state,
         players: [...state.players, action.payload], // Adding a new player to the players array
       };
+    case actions.SET_READY: {
+      const { userId } = action.payload;
+      const updatedPlayers = state.players.map((player) =>
+        player.id === userId ? { ...player, ready: true } : player
+      );
+
+      const allPlayersReady = updatedPlayers.every((player) => player.ready);
+
+      return {
+        ...state,
+        players: updatedPlayers,
+        phase: allPlayersReady ? "playing" : state.phase, // Move to "playing" phase if both players are ready
+      };
+    }
     case actions.UPDATE_GAME_STATE:
       return { ...state, ...action.payload };
     case actions.PLAY_CARD:

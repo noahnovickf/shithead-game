@@ -7,7 +7,7 @@ import Opponent from "./Opponent";
 import CardPile from "./CardPile";
 import Deck from "./Deck";
 
-const socket = io("http://localhost:3001");
+export const socket = io("http://localhost:3001");
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -16,7 +16,7 @@ const App = () => {
   const hasEnoughPlayers = state.players.length === 2;
   const hasDealt = state.deck.length;
 
-  console.log(hasEnoughPlayers, hasDealt);
+  console.log("STATE", state);
 
   const handleConnect = () => {
     console.log("data", socket.id, socket.connected);
@@ -34,8 +34,6 @@ const App = () => {
     });
   }, []);
 
-  console.log(user, "STATE", state);
-
   return (
     <div className="main-board">
       <h1>Shithead Game</h1>
@@ -50,8 +48,8 @@ const App = () => {
         </button>
       )}
       <Opponent user={user} />
-      {state.currentTurn && (
-        <div>
+      {state.phase === "playing" && (
+        <div style={{ display: "flex", gap: "24px" }}>
           <CardPile />
           <Deck />
         </div>

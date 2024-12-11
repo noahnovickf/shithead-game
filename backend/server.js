@@ -37,6 +37,23 @@ io.on("connection", (socket) => {
     io.emit("gameStateUpdate", gameState);
   });
 
+  socket.on("ready", (userId) => {
+    // Update the player state to mark them as ready
+    const player = gameState.players.find((p) => p.id === userId);
+    if (player) {
+      player.ready = true;
+    }
+
+    // Check if both players are ready and change the phase to "playing"
+    const allPlayersReady = gameState.players.every((p) => p.ready);
+
+    if (allPlayersReady) {
+      gameState.phase = "playing";
+      gameState.currentTurn = gameState.players[0].id;
+      io.emit("gameStateUpdate", gameState);
+    }
+  });
+
   console.log(gameState.players);
 
   socket.on("clearGame", () => {
