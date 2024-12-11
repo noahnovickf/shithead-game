@@ -9,7 +9,7 @@ import SwapCardButtons from "./SwapCardButtons";
 import { Phases } from "./phases";
 
 const Gameboard = ({ user }) => {
-  const { state, dispatch } = useGameContext();
+  const { state } = useGameContext();
   const player = state.players.find((p) => p.id === user);
   const [selectedHandCard, setSelectedHandCard] = useState(null);
   const [selectedFaceUpCard, setSelectedFaceUpCard] = useState(null);
@@ -39,10 +39,6 @@ const Gameboard = ({ user }) => {
       // Check if the card is playable
       const topCard = state.cardPile[state.cardPile.length - 1];
       if (isCardPlayable(card, topCard)) {
-        dispatch({
-          type: "PLAY_CARD",
-          payload: { user, card },
-        });
         socket.emit("playCard", { userId: user, card });
       } else {
         alert("You can't play this card");

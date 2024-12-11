@@ -6,6 +6,7 @@ import { useGameContext } from "./context/GameContext";
 import Opponent from "./Opponent";
 import CardPile from "./CardPile";
 import Deck from "./Deck";
+import { Phases } from "./phases";
 
 export const socket = io("http://localhost:3001");
 
@@ -14,7 +15,6 @@ const App = () => {
   const { state } = useGameContext();
 
   const hasEnoughPlayers = state.players.length === 2;
-  const hasDealt = state.deck.length;
 
   console.log("STATE", state);
 
@@ -38,7 +38,7 @@ const App = () => {
     <div className="main-board">
       <h1>Shithead Game</h1>
       {!user && <button onClick={() => handleConnect()}>Connect</button>}
-      {user && hasEnoughPlayers && state.phase === "start" && (
+      {user && hasEnoughPlayers && state.phase === Phases.START && (
         <button
           onClick={() => {
             handleGameStart();
