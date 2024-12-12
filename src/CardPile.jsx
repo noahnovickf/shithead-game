@@ -28,5 +28,3 @@ const CardPile = () => {
 };
 
 export default CardPile;
-
-// SWAP CARDS NOT STAYING, being overriden by state

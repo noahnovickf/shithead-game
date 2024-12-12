@@ -180,8 +180,6 @@ io.on("connection", (socket) => {
     io.emit("gameStateUpdate", gameState);
   });
 
-  console.log("PLAYERS: ", gameState.players);
-
   socket.on("clearGame", () => {
     gameState.players = [];
     gameState.deck = [];
