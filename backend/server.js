@@ -110,43 +110,44 @@ io.on("connection", (socket) => {
     io.emit("gameStateUpdate", gameState);
   });
 
-  socket.on("playCard", (payload) => {
-    const { userId, card } = payload;
+  socket.on("playCards", (payload) => {
+    const { userId, cards } = payload;
 
-    // Find the player in the game state
     const playerIndex = gameState.players.findIndex(
       (player) => player.id === userId
     );
 
-    if (playerIndex === -1) return; // Handle the case where the player is not found
+    if (playerIndex === -1) return;
 
     const updatedPlayers = [...gameState.players];
     const player = updatedPlayers[playerIndex];
 
-    // Remove the played card from the player's hand
+    // UPDATE PLAYER HAND
     const updatedHand = player.hand.filter(
-      (c) => !(c.rank === card.rank && c.suit === card.suit)
+      (c) => !cards.some((card) => c.rank === card.rank && c.suit === card.suit)
     );
+    player.hand = updatedHand;
 
-    // Add the top card from the cardPile to the player's hand (if exists)
-    const topCard = gameState.deck[gameState.deck.length - 1];
-    // remove top card from deck
-    if (updatedHand.length < 3) {
-      gameState.deck.pop();
+    // PICKUP FACE UP CARDS
+    if (gameState.deck.length === 0 && updatedHand.length === 0) {
+      player.hand = player.faceUp;
+      player.faceUp = [];
+    } else {
+      // PICKUP CARDS FROM DECK
+      while (player.hand.length < 3 && gameState.deck.length > 0) {
+        const topCard = gameState.deck.pop();
+        player.hand.push(topCard);
+      }
     }
-    const newHand =
-      topCard && updatedHand.length < 3
-        ? [...updatedHand, topCard]
-        : updatedHand;
 
-    player.hand = newHand;
+    // UPDATE PILE
+    gameState.cardPile = [...gameState.cardPile, ...cards];
 
-    gameState.cardPile.push(card);
-    if (card.rank !== "j" && card.rank !== "10") {
+    if (cards[0].rank !== "j" && cards[0].rank !== "10") {
       gameState.currentTurn =
         gameState.players[(playerIndex + 1) % gameState.players.length].id;
     }
-    if (card.rank === "10") {
+    if (cards[0].rank === "10") {
       setTimeout(() => {
         gameState.cardPile = [];
         io.emit("gameStateUpdate", gameState);
@@ -181,11 +182,30 @@ io.on("connection", (socket) => {
   });
 
   socket.on("clearGame", () => {
-    gameState.players = [];
+    if (gameState.players.length === 2) {
+      gameState.players = [
+        {
+          id: gameState.players[0]?.id,
+          hand: [],
+          faceUp: [],
+          faceDown: [],
+          ready: false,
+        },
+        {
+          id: gameState.players[1]?.id,
+          hand: [],
+          faceUp: [],
+          faceDown: [],
+          ready: false,
+        },
+      ];
+    } else {
+      gameState.players = [];
+    }
     gameState.deck = [];
     gameState.cardPile = [];
     gameState.currentTurn = null;
-    gameState.phase = "start";
+    gameState.phase = Phases.START;
     io.emit("gameStateUpdate", gameState);
   });
 

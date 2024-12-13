@@ -4,7 +4,7 @@ import HiddenCard from "./HiddenCard";
 import "./gameboard.css";
 import { useState } from "react";
 import { socket } from "./App";
-import { isCardPlayable } from "./isCardPlayable";
+import { isCardDuplicate, isCardPlayable } from "./isCardPlayable";
 import SwapCardButtons from "./SwapCardButtons";
 import { Phases } from "./phases";
 
@@ -13,10 +13,12 @@ const Gameboard = ({ user }) => {
   const player = state.players.find((p) => p.id === user);
   const [selectedHandCard, setSelectedHandCard] = useState(null);
   const [selectedFaceUpCard, setSelectedFaceUpCard] = useState(null);
+  const [multipleCards, setMultipleCards] = useState([]);
 
   const handleCardClick = (card, location) => {
     if (state.phase === Phases.SWAP) {
       if (location === "hand") {
+        // Sets the selected card to the clicked card if it's not already selected
         setSelectedHandCard(
           selectedHandCard?.rank === card.rank &&
             selectedHandCard?.suit === card.suit
@@ -24,6 +26,7 @@ const Gameboard = ({ user }) => {
             : card
         );
       } else if (location === "faceUp") {
+        // Sets the selected card to the clicked card if it's not already selected
         setSelectedFaceUpCard(
           selectedFaceUpCard?.rank === card.rank &&
             selectedFaceUpCard?.suit === card.suit
@@ -36,10 +39,30 @@ const Gameboard = ({ user }) => {
       state.currentTurn === user &&
       location === "hand"
     ) {
-      // Check if the card is playable
       const topCard = state.cardPile[state.cardPile.length - 1];
       if (isCardPlayable(card, topCard)) {
-        socket.emit("playCard", { userId: user, card });
+        if (isCardDuplicate(card, player.hand)) {
+          // If click selected card again, will play cards
+          if (
+            !!multipleCards.find(
+              (c) => c.rank === card.rank && c.suit === card.suit
+            )
+          ) {
+            socket.emit("playCards", {
+              userId: user,
+              cards: multipleCards,
+            });
+            setMultipleCards([]);
+            return;
+          } else {
+            setMultipleCards([card, ...multipleCards]);
+            return;
+          }
+        } else {
+          // Play single card, empty duplicate cards
+          socket.emit("playCards", { userId: user, cards: [card] });
+          setMultipleCards([]);
+        }
       } else {
         alert("You can't play this card");
       }
@@ -97,16 +120,21 @@ const Gameboard = ({ user }) => {
 
           <div className="hand">
             {player.hand.map((card, i) => (
-              <Card
-                key={i}
-                rank={card.rank}
-                suit={card.suit}
-                selected={
-                  selectedHandCard?.rank === card.rank &&
-                  selectedHandCard?.suit === card.suit
-                }
-                onClick={() => handleCardClick(card, "hand")}
-              />
+              <div className="card">
+                <Card
+                  key={i}
+                  rank={card.rank}
+                  suit={card.suit}
+                  selected={
+                    (selectedHandCard?.rank === card.rank &&
+                      selectedHandCard?.suit === card.suit) ||
+                    !!multipleCards.find(
+                      (c) => c.rank === card.rank && c.suit === card.suit
+                    )
+                  }
+                  onClick={() => handleCardClick(card, "hand")}
+                />
+              </div>
             ))}
           </div>
         </div>

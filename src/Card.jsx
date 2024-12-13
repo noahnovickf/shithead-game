@@ -1,6 +1,5 @@
 import * as deck from "@letele/playing-cards";
-import { useGameContext } from "./context/GameContext";
-import { useState } from "react";
+import "./gameboard.css";
 
 const Card = ({ rank, suit, selected, onClick, opponent }) => {
   const CardComponent = deck[`${suit}${rank}`];

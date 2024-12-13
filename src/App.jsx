@@ -50,7 +50,7 @@ const App = () => {
       <Opponent user={user} />
       {state.phase === "playing" && (
         <div style={{ display: "flex", gap: "24px" }}>
-          <CardPile />
+          <CardPile user={user} />
           <Deck />
         </div>
       )}

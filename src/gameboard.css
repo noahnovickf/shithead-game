@@ -42,4 +42,17 @@
   justify-content: center;
   gap: 10px; /* Spacing between cards */
   margin-top: 20px;
+  /* max-width: 500px; Set maximum width for container */
+  overflow: scroll; /* Clip overflowing content */
 }
+
+.card:nth-child(n + 2) {
+  margin-left: -100px;
+}
+
+/* TODO:
+- style card in hands
+- make pile non-clickable if its not the player's turn
+- dead flip logic
+- game reset has to be way better...
+*/

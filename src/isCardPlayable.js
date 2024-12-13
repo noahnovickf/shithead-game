@@ -36,3 +36,8 @@ export const isCardPlayable = (card, topCard) => {
 
   return false;
 };
+
+export const isCardDuplicate = (card, hand) => {
+  const duplicates = hand.filter((c) => c.rank === card.rank);
+  return duplicates.length > 1;
+};

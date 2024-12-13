@@ -1,4 +1,4 @@
-import { isCardPlayable } from "./isCardPlayable";
+import { isCardDuplicate, isCardPlayable } from "./isCardPlayable";
 
 describe("isCardPlayable", () => {
   const rankOrder = ["2", "4", "5", "6", "7", "8", "9", "j", "q", "k", "a"];
@@ -45,5 +45,30 @@ describe("isCardPlayable", () => {
 
     const card2 = { rank: "8", suit: "spades" };
     expect(isCardPlayable(card2, topCard)).toBe(false); // 8 cannot be played on 7
+  });
+
+  test("should return true if card is duplicate in hand", () => {
+    const card = { rank: "6", suit: "hearts" };
+    const hand = [
+      { rank: "6", suit: "hearts" },
+      { rank: "7", suit: "clubs" },
+      { rank: "6", suit: "spades" },
+    ];
+    expect(isCardDuplicate(card, hand)).toBe(true);
+  });
+
+  test("card already in multipleCard array should return true", () => {
+    const card = { rank: "6", suit: "hearts" };
+    const multipleCards = [{ rank: "6", suit: "hearts" }];
+    expect(
+      !!multipleCards.find((c) => c.rank === card.rank && c.suit === card.suit)
+    ).toBe(true);
+  });
+
+  test.only("top card", () => {
+    const cards = [{ rank: "6", suit: "hearts" }];
+    const topCard = cards.pop();
+    console.log(topCard);
+    expect(topCard).toEqual({ rank: "6", suit: "hearts" });
   });
 });

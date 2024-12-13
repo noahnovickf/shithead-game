@@ -2,7 +2,7 @@ import { socket } from "./App";
 import Card from "./Card";
 import { useGameContext } from "./context/GameContext";
 
-const CardPile = () => {
+const CardPile = ({ user }) => {
   const { state } = useGameContext();
 
   const hasPile = state.cardPile.length > 0;
@@ -12,7 +12,9 @@ const CardPile = () => {
       suit={state.cardPile[state.cardPile?.length - 1].suit}
       rank={state.cardPile[state.cardPile?.length - 1].rank}
       onClick={() => {
-        socket.emit("pickupDeck", { userId: state.currentTurn });
+        if (user === state.currentTurn) {
+          socket.emit("pickupDeck", { userId: user });
+        }
       }}
     />
   ) : (
