@@ -4,7 +4,11 @@ import HiddenCard from "./HiddenCard";
 import "./gameboard.css";
 import { useState } from "react";
 import { socket } from "./App";
-import { isCardDuplicate, isCardPlayable } from "./isCardPlayable";
+import {
+  isCardDuplicate,
+  isCardPlayable,
+  updateCardSpacing,
+} from "./gameUtils";
 import SwapCardButtons from "./SwapCardButtons";
 import { Phases } from "./phases";
 
@@ -14,6 +18,8 @@ const Gameboard = ({ user }) => {
   const [selectedHandCard, setSelectedHandCard] = useState(null);
   const [selectedFaceUpCard, setSelectedFaceUpCard] = useState(null);
   const [multipleCards, setMultipleCards] = useState([]);
+
+  updateCardSpacing(player?.hand?.length);
 
   const handleCardClick = (card, location) => {
     if (state.phase === Phases.SWAP) {
@@ -95,11 +101,11 @@ const Gameboard = ({ user }) => {
         />
       )}
       {player && (
-        <div>
-          <div className="card-container">
+        <div className="card-container">
+          <div className="table-card-container">
             <div className="face-down-row">
-              {player.faceDown.map(({ rank, suit }, i) => (
-                <HiddenCard rank={rank} suit={suit} key={i} />
+              {player.faceDown.map((card, i) => (
+                <HiddenCard user={user} card={card} key={i} />
               ))}
             </div>
             <div className="face-up-row">

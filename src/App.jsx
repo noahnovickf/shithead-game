@@ -7,10 +7,13 @@ import Opponent from "./Opponent";
 import CardPile from "./CardPile";
 import Deck from "./Deck";
 import { Phases } from "./phases";
+import ReactConfetti from "react-confetti";
 
 export const socket = io("http://localhost:3001");
 
 const App = () => {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
   const [user, setUser] = useState(null);
   const { state } = useGameContext();
 
@@ -62,6 +65,9 @@ const App = () => {
       >
         Reset Game
       </button>
+      {state.phase === Phases.END && (
+        <ReactConfetti width={width} height={height} />
+      )}
     </div>
   );
 };

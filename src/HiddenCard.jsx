@@ -1,4 +1,11 @@
-const HiddenCard = ({ rank, suit, opponent }) => {
+import { socket } from "./App";
+import { useGameContext } from "./context/GameContext";
+
+const HiddenCard = ({ user, card, opponent }) => {
+  const { state } = useGameContext();
+
+  const player = state.players.find((p) => p.id === user);
+
   return (
     <button
       style={{
@@ -11,7 +18,13 @@ const HiddenCard = ({ rank, suit, opponent }) => {
         borderRadius: "10px", // Optional: adds border radius
       }}
       onClick={() => {
-        console.log(rank, suit);
+        if (
+          player?.hand.length === 0 &&
+          player.faceUp.length === 0 &&
+          state.currentTurn === user
+        ) {
+          socket.emit("deadFlip", { userId: user, card: card });
+        }
       }}
     />
   );

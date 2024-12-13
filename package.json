@@ -6,6 +6,7 @@
     "@letele/playing-cards": "^0.1.0",
     "cra-template": "1.2.0",
     "react": "^18.3.1",
+    "react-confetti": "^6.1.0",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
     "socket.io-client": "^4.8.1"

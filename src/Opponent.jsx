@@ -22,10 +22,10 @@ const Opponent = ({ user }) => {
     >
       {opponent && (
         <div>
-          <div className="card-container">
+          <div className="table-card-container">
             <div className="face-down-row">
               {opponent.faceDown.map(({ rank, suit }, i) => (
-                <HiddenCard rank={rank} suit={suit} key={i} opponent />
+                <HiddenCard key={i} opponent />
               ))}
             </div>
             <div className="face-up-row">
@@ -34,7 +34,9 @@ const Opponent = ({ user }) => {
               ))}
             </div>
           </div>
-          <p>Cards in opponent's hand: {opponent.hand.length} </p>
+          <h3 style={{ marginTop: "-40px" }}>
+            Cards in opponent's hand: {opponent.hand.length}{" "}
+          </h3>
         </div>
       )}
     </div>

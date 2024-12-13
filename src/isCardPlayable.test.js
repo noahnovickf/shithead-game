@@ -1,4 +1,4 @@
-import { isCardDuplicate, isCardPlayable } from "./isCardPlayable";
+import { isCardDuplicate, isCardPlayable } from "./gameUtils";
 
 describe("isCardPlayable", () => {
   const rankOrder = ["2", "4", "5", "6", "7", "8", "9", "j", "q", "k", "a"];

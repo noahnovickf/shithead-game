@@ -12,10 +12,17 @@
   padding: 20px;
 }
 
-.card-container {
+.table-card-container {
   position: relative;
   width: fit-content;
   margin-bottom: 60px; /* Center the container */
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .face-down-row {
@@ -46,13 +53,16 @@
   overflow: scroll; /* Clip overflowing content */
 }
 
-.card:nth-child(n + 2) {
-  margin-left: -100px;
+:root {
+  --spacing-factor: 0; /* Base spacing for cards */
+  --dynamic-margin: 0px; /* Default margin */
 }
 
-/* TODO:
-- style card in hands
-- make pile non-clickable if its not the player's turn
-- dead flip logic
-- game reset has to be way better...
-*/
+.card {
+  display: inline-block;
+  transition: margin-left 0.2s;
+}
+
+.card:nth-child(n + 2) {
+  margin-left: var(--dynamic-margin);
+}

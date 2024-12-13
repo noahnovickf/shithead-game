@@ -6,9 +6,9 @@ const Deck = () => {
   const deckLength = state.deck.length;
 
   return (
-    <div style={{ display: "flex", gap: "20px" }}>
+    <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
       <HiddenCard />
-      <h4>{deckLength}</h4>
+      <h2>{deckLength}</h2>
     </div>
   );
 };

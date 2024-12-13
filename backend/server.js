@@ -4,7 +4,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const gameState = require("./gameState");
-const { initializeGame, Phases } = require("./utils");
+const { initializeGame, Phases, isCardPlayable } = require("./utils");
 app.use(cors());
 
 const server = http.createServer(app);
@@ -178,6 +178,51 @@ io.on("connection", (socket) => {
       gameState.players[(playerIndex + 1) % gameState.players.length].id;
 
     // Emit the updated game state to all clients
+    io.emit("gameStateUpdate", gameState);
+  });
+
+  socket.on("deadFlip", (payload) => {
+    const { userId, card } = payload;
+    const player = gameState.players.find((p) => p.id === userId);
+    if (!player) return;
+
+    const topCard = gameState.cardPile[gameState.cardPile.length - 1];
+    // if card is playable on top card, add it to the cardPile, move to next player
+    // Remove card from faceDown
+    player.faceDown = player.faceDown.filter(
+      (c) => c.rank !== card.rank || c.suit !== card.suit
+    );
+
+    if (isCardPlayable(card, topCard)) {
+      // Add to pile
+      gameState.cardPile = [...gameState.cardPile, card];
+      // Check if its a special card
+      if (card.rank !== "j" && card.rank !== "10") {
+        gameState.currentTurn =
+          gameState.players[
+            (gameState.players.findIndex((p) => p.id === userId) + 1) %
+              gameState.players.length
+          ].id;
+      }
+      if (card.rank === "10") {
+        setTimeout(() => {
+          gameState.cardPile = [];
+          io.emit("gameStateUpdate", gameState);
+        }, 1000);
+      }
+      if (player.faceDown.length === 0 && player.hand.length === 0) {
+        gameState.phase = Phases.END;
+      }
+    } else {
+      player.hand = [...gameState.cardPile, card];
+      gameState.cardPile = [];
+      gameState.currentTurn =
+        gameState.players[
+          (gameState.players.findIndex((p) => p.id === userId) + 1) %
+            gameState.players.length
+        ].id;
+    }
+
     io.emit("gameStateUpdate", gameState);
   });
 

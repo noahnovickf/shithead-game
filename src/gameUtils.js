@@ -41,3 +41,14 @@ export const isCardDuplicate = (card, hand) => {
   const duplicates = hand.filter((c) => c.rank === card.rank);
   return duplicates.length > 1;
 };
+
+export const updateCardSpacing = (handSize) => {
+  const root = document.documentElement;
+
+  if (handSize > 3) {
+    const spacing = handSize * -8.5;
+    root.style.setProperty("--dynamic-margin", `${spacing}px`);
+  } else {
+    root.style.setProperty("--dynamic-margin", "0px");
+  }
+};
