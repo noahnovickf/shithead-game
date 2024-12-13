@@ -17,13 +17,11 @@ const App = () => {
   const { state } = useGameContext();
 
   const handleConnect = () => {
-    console.log("data", socket.id, socket.connected);
     socket.emit("userConnect", socket.id);
   };
 
   useEffect(() => {
     socket.on("currentUserID", (data) => {
-      console.log("addPlayer", data);
       setUser(data);
     });
   }, []);
