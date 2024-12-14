@@ -1,9 +1,9 @@
 
 /* TODO:
-- game reset has to be way better...
-- End game screen
 - show what the last card was played
 - local storage for the game
-- remove onClick button for swap cards
+- host game
+- game reset has to be way better... 
+- End game screen
 - refactor components
 */

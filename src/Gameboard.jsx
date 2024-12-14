@@ -103,8 +103,6 @@ const Gameboard = ({ user }) => {
           state.currentTurn === user && state.phase === Phases.PLAYING
             ? "lightblue"
             : "",
-        borderRadius: "10px",
-        margin: "24px",
       }}
     >
       {state.phase === Phases.START && state.players.length === 1 && (

@@ -64,11 +64,4 @@ describe("isCardPlayable", () => {
       !!multipleCards.find((c) => c.rank === card.rank && c.suit === card.suit)
     ).toBe(true);
   });
-
-  test.only("top card", () => {
-    const cards = [{ rank: "6", suit: "hearts" }];
-    const topCard = cards.pop();
-    console.log(topCard);
-    expect(topCard).toEqual({ rank: "6", suit: "hearts" });
-  });
 });

@@ -12,8 +12,6 @@ const App = () => {
   const [user, setUser] = useState(null);
   const { state } = useGameContext();
 
-  console.log("POST CLEAR STATEA", state);
-
   const handleConnect = () => {
     socket.emit("userConnect", socket.id);
   };
@@ -26,7 +24,13 @@ const App = () => {
 
   return (
     <div className="main-board">
-      <h1>Shithead Game</h1>
+      <h1
+        style={{
+          marginBottom: 0,
+        }}
+      >
+        Shithead Game
+      </h1>
       {!user && <button onClick={() => handleConnect()}>Join Game</button>}
       {user && <GameWrapper user={user} />}
       {state.phase === Phases.END && <ConfettiDisplay />}

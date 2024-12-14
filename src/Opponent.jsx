@@ -16,8 +16,6 @@ const Opponent = ({ user }) => {
           state.currentTurn !== user && state.phase === Phases.PLAYING
             ? "lightblue"
             : "",
-        borderRadius: "10px",
-        margin: "24px",
       }}
     >
       {opponent && (
@@ -34,12 +32,12 @@ const Opponent = ({ user }) => {
               ))}
             </div>
           </div>
-          {state.phase === Phases.PLAYING && (
-            <h3 style={{ marginTop: "-40px" }}>
-              Cards in opponent's hand: {opponent.hand.length}
-            </h3>
-          )}
         </div>
+      )}
+      {state.phase === Phases.PLAYING && (
+        <h3 style={{ margin: 0 }}>
+          Cards in opponent's hand: {opponent.hand.length}
+        </h3>
       )}
     </div>
   );

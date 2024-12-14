@@ -10,12 +10,14 @@
 .gameboard {
   text-align: center;
   padding: 20px;
+  border-radius: 10px;
+  margin: 24px;
 }
 
 .table-card-container {
   position: relative;
   width: fit-content;
-  margin-bottom: 60px; /* Center the container */
+  margin-bottom: 20px; /* Center the container */
 }
 
 .card-container {
@@ -41,7 +43,6 @@
   top: 15px; /* Overlap face-down row by 30px */
   left: 0;
   z-index: 2; /* Ensure it's above face-down cards */
-  margin-bottom: 30px;
 }
 
 .hand {
