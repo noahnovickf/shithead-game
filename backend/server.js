@@ -229,27 +229,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("clearGame", () => {
-    if (gameState.players.length === 2) {
-      gameState.players = [
-        {
-          id: gameState.players[0]?.id,
-          hand: [],
-          faceUp: [],
-          faceDown: [],
-          ready: false,
-        },
-        {
-          id: gameState.players[1]?.id,
-          hand: [],
-          faceUp: [],
-          faceDown: [],
-          ready: false,
-        },
-      ];
-    } else {
-      gameState.players = [];
-    }
+    gameState.players = gameState.players.map((player) => ({
+      ...player,
+      hand: [],
+      faceUp: [],
+      faceDown: [],
+      ready: false,
+    }));
     gameState.deck = [];
+    gameState.lastPlayed = null;
     gameState.cardPile = [];
     gameState.currentTurn = null;
     gameState.phase = Phases.START;

@@ -5,6 +5,7 @@ import { useGameContext } from "./context/GameContext";
 import { Phases } from "./phases";
 import ConfettiDisplay from "./ConfettiDisplay";
 import GameWrapper from "./GameWrapper";
+import ResetButton from "./ResetButton";
 
 export const socket = io(process.env.REACT_APP_SERVER_URL);
 
@@ -17,7 +18,7 @@ const App = () => {
     socket.emit("userConnect", user.toLowerCase());
     setConnected(true);
   };
-  console.log(user);
+
   useEffect(() => {
     socket.on("currentUserID", (data) => {
       setUser(data);
@@ -26,6 +27,7 @@ const App = () => {
 
   return (
     <div className="main-board">
+      <ResetButton />
       <h1
         style={{
           marginBottom: 0,

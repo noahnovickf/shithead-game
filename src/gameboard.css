@@ -84,3 +84,22 @@ input {
   border-radius: 5px;
   margin-right: 12px;
 }
+
+.reset-button {
+  position: fixed;
+  top: 20px; /* Adjust the value to move it vertically */
+  right: 20px; /* Adjust the value to move it horizontally */
+  z-index: 1000; /* Ensure the button is above other content */
+  padding: 10px 20px;
+  background-color: #ff4747; /* Example color for button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.reset-button:hover {
+  background-color: #ff1a1a; /* Darker color on hover */
+}

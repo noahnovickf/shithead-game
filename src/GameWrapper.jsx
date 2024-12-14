@@ -5,7 +5,6 @@ import Opponent from "./Opponent";
 import CardPile from "./CardPile";
 import Deck from "./Deck";
 import Gameboard from "./Gameboard";
-import ResetButton from "./ResetButton";
 import { useGameContext } from "./context/GameContext";
 
 const cardRankToWord = {
@@ -46,7 +45,6 @@ const GameWrapper = ({ user }) => {
         </Fragment>
       )}
       <Gameboard user={user} />
-      <ResetButton />
     </Fragment>
   );
 };
