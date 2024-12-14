@@ -34,9 +34,11 @@ const Opponent = ({ user }) => {
               ))}
             </div>
           </div>
-          <h3 style={{ marginTop: "-40px" }}>
-            Cards in opponent's hand: {opponent.hand.length}{" "}
-          </h3>
+          {state.phase === Phases.PLAYING && (
+            <h3 style={{ marginTop: "-40px" }}>
+              Cards in opponent's hand: {opponent.hand.length}
+            </h3>
+          )}
         </div>
       )}
     </div>

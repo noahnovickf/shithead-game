@@ -1,5 +1,12 @@
 const gameState = require("./gameState");
 
+const Phases = {
+  START: "start",
+  SWAP: "swap",
+  PLAYING: "playing",
+  END: "end",
+};
+
 // Generate a standard deck of cards
 function generateDeck() {
   const suits = ["H", "D", "C", "S"];
@@ -50,17 +57,10 @@ function initializeGame() {
     gameState.players[playerId].ready = false;
   });
 
-  gameState.deck = []; // Remaining cards for drawing
+  gameState.deck = deck; // Remaining cards for drawing
   gameState.cardPile = []; // Start with an empty pile
-  gameState.phase = "swap";
+  gameState.phase = Phases.SWAP;
 }
-
-const Phases = {
-  START: "start",
-  SWAP: "swap",
-  PLAYING: "playing",
-  END: "end",
-};
 
 const isCardPlayable = (card, topCard) => {
   // playing on an empty pile is always allowed

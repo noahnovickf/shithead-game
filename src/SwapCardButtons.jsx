@@ -1,25 +1,9 @@
 import { socket } from "./App";
 import { useGameContext } from "./context/GameContext";
 
-const SwapCardButtons = ({
-  user,
-  selectedFaceUpCard,
-  selectedHandCard,
-  setSelectedFaceUpCard,
-  setSelectedHandCard,
-}) => {
+const SwapCardButtons = ({ user }) => {
   const { state } = useGameContext();
   const player = state.players.find((p) => p.id === user);
-
-  const performSwap = (handCard, faceUpCard) => {
-    socket.emit("swapCards", {
-      userId: user,
-      selectedHandCard: handCard,
-      selectedFaceUpCard: faceUpCard,
-    });
-    setSelectedHandCard(null);
-    setSelectedFaceUpCard(null);
-  };
 
   const handleReadyClick = () => {
     socket.emit("ready", user);
@@ -31,16 +15,14 @@ const SwapCardButtons = ({
         margin: "24px",
         gap: "12px",
         display: "flex",
-        justifyContent: "space-between",
+        justifyContent: "center",
       }}
     >
-      <button
-        onClick={() => performSwap(selectedHandCard, selectedFaceUpCard)}
-        disabled={!selectedFaceUpCard || !selectedHandCard}
-      >
-        Swap Cards
-      </button>
-      {!player?.ready && <button onClick={handleReadyClick}>Ready!</button>}
+      {!player?.ready ? (
+        <button onClick={handleReadyClick}>Ready!</button>
+      ) : (
+        <h3>Waiting for other player...</h3>
+      )}
     </div>
   );
 };

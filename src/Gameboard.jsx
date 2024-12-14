@@ -21,24 +21,42 @@ const Gameboard = ({ user }) => {
 
   updateCardSpacing(player?.hand?.length);
 
+  const performSwap = (handCard, faceUpCard) => {
+    socket.emit("swapCards", {
+      userId: user,
+      selectedHandCard: handCard,
+      selectedFaceUpCard: faceUpCard,
+    });
+    setSelectedHandCard(null);
+    setSelectedFaceUpCard(null);
+  };
+
   const handleCardClick = (card, location) => {
     if (state.phase === Phases.SWAP) {
       if (location === "hand") {
-        // Sets the selected card to the clicked card if it's not already selected
-        setSelectedHandCard(
-          selectedHandCard?.rank === card.rank &&
-            selectedHandCard?.suit === card.suit
-            ? null
-            : card
-        );
+        if (selectedFaceUpCard) {
+          performSwap(card, selectedFaceUpCard);
+        } else {
+          // Sets the selected card to the clicked card if it's not already selected
+          setSelectedHandCard(
+            selectedHandCard?.rank === card.rank &&
+              selectedHandCard?.suit === card.suit
+              ? null
+              : card
+          );
+        }
       } else if (location === "faceUp") {
-        // Sets the selected card to the clicked card if it's not already selected
-        setSelectedFaceUpCard(
-          selectedFaceUpCard?.rank === card.rank &&
-            selectedFaceUpCard?.suit === card.suit
-            ? null
-            : card
-        );
+        if (selectedHandCard) {
+          performSwap(selectedHandCard, card);
+        } else {
+          // Sets the selected card to the clicked card if it's not already selected
+          setSelectedFaceUpCard(
+            selectedFaceUpCard?.rank === card.rank &&
+              selectedFaceUpCard?.suit === card.suit
+              ? null
+              : card
+          );
+        }
       }
     } else if (
       state.phase === Phases.PLAYING &&
@@ -89,17 +107,10 @@ const Gameboard = ({ user }) => {
         margin: "24px",
       }}
     >
-      {state.phase === Phases.START &&
-        (user ? <p>Your ID: {user}</p> : <p>Waiting for connection...</p>)}
-      {state.phase === Phases.SWAP && (
-        <SwapCardButtons
-          user={user}
-          selectedHandCard={selectedHandCard}
-          selectedFaceUpCard={selectedFaceUpCard}
-          setSelectedHandCard={setSelectedHandCard}
-          setSelectedFaceUpCard={setSelectedFaceUpCard}
-        />
+      {state.phase === Phases.START && state.players.length === 1 && (
+        <h3>Waiting on another player</h3>
       )}
+      {state.phase === Phases.SWAP && <SwapCardButtons user={user} />}
       {player && (
         <div className="card-container">
           <div className="table-card-container">
@@ -126,9 +137,8 @@ const Gameboard = ({ user }) => {
 
           <div className="hand">
             {player.hand.map((card, i) => (
-              <div className="card">
+              <div className="card" key={i}>
                 <Card
-                  key={i}
                   rank={card.rank}
                   suit={card.suit}
                   selected={
