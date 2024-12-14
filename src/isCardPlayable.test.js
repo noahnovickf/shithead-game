@@ -26,6 +26,12 @@ describe("isCardPlayable", () => {
     expect(isCardPlayable(card, topCard)).toBe(true); // 7 can be played on another 7
   });
 
+  test("2 on a 3? ", () => {
+    const card = { rank: "2", suit: "hearts" };
+    const topCard = { rank: "3", suit: "spades" };
+    expect(isCardPlayable(card, topCard)).toBe(false); // 2 can be played on a 3
+  });
+
   test("should allow a card that is higher to be played", () => {
     const card = { rank: "8", suit: "diamonds" };
     const topCard = { rank: "6", suit: "hearts" };
