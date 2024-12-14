@@ -112,7 +112,7 @@ io.on("connection", (socket) => {
 
   socket.on("playCards", (payload) => {
     const { userId, cards } = payload;
-
+    gameState.lastPlayed = cards;
     const playerIndex = gameState.players.findIndex(
       (player) => player.id === userId
     );
@@ -183,6 +183,7 @@ io.on("connection", (socket) => {
 
   socket.on("deadFlip", (payload) => {
     const { userId, card } = payload;
+    gameState.lastPlayed = [card];
     const player = gameState.players.find((p) => p.id === userId);
     if (!player) return;
 

@@ -56,7 +56,7 @@ function initializeGame() {
     gameState.players[playerId].hand = deck.splice(0, 3); // 3 cards in hand
     gameState.players[playerId].ready = false;
   });
-
+  gameState.lastPlayed = null;
   gameState.deck = deck; // Remaining cards for drawing
   gameState.cardPile = []; // Start with an empty pile
   gameState.phase = Phases.SWAP;
