@@ -10,12 +10,14 @@ export const socket = io(process.env.REACT_APP_SERVER_URL);
 
 const App = () => {
   const [user, setUser] = useState(null);
+  const [connected, setConnected] = useState(false);
   const { state } = useGameContext();
 
   const handleConnect = () => {
-    socket.emit("userConnect", socket.id);
+    socket.emit("userConnect", user.toLowerCase());
+    setConnected(true);
   };
-
+  console.log(user);
   useEffect(() => {
     socket.on("currentUserID", (data) => {
       setUser(data);
@@ -31,8 +33,19 @@ const App = () => {
       >
         Shithead
       </h1>
-      {!user && <button onClick={() => handleConnect()}>Join Game</button>}
-      {user && <GameWrapper user={user} />}
+      {!connected && (
+        <div>
+          <input
+            type="text"
+            placeholder="Enter your name"
+            onChange={(e) => setUser(e.target.value)}
+          />
+          <button disabled={!user} onClick={() => handleConnect()}>
+            Join Game
+          </button>
+        </div>
+      )}
+      {connected && <GameWrapper user={user} />}
       {state.phase === Phases.END && <ConfettiDisplay />}
     </div>
   );
