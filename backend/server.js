@@ -4,6 +4,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const gameState = require("./gameState");
+require("dotenv").config();
 const { initializeGame, Phases, isCardPlayable } = require("./utils");
 app.use(cors());
 
@@ -11,7 +12,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
@@ -260,7 +261,8 @@ io.on("connection", (socket) => {
     console.log("User disconnected", socket.id, gameState.players);
   });
 });
+const PORT = process.env.PORT || 3001;
 
-server.listen(3001, () => {
-  console.log("Server running on port 3001");
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

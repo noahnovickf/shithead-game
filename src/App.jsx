@@ -6,7 +6,7 @@ import { Phases } from "./phases";
 import ConfettiDisplay from "./ConfettiDisplay";
 import GameWrapper from "./GameWrapper";
 
-export const socket = io("http://localhost:3001");
+export const socket = io(process.env.REACT_APP_SERVER_URL);
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -29,7 +29,7 @@ const App = () => {
           marginBottom: 0,
         }}
       >
-        Shithead Game
+        Shithead
       </h1>
       {!user && <button onClick={() => handleConnect()}>Join Game</button>}
       {user && <GameWrapper user={user} />}
