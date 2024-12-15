@@ -1,11 +1,6 @@
 
 /* TODO:
-- local storage for the game
-- host game
-- game reset has to be way better... 
-- End game screen
 - refactor components
-- mobile css
-- multiple card cancel if not same rank
-- end game not working
+- deal only for player 1
+- maybe debounce?
 */

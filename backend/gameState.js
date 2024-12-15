@@ -7,4 +7,6 @@ const gameState = {
   currentTurn: null, // Tracks whose turn it is
 };
 
-module.exports = gameState;
+const games = {};
+
+module.exports = { gameState, games };
