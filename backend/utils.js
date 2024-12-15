@@ -48,7 +48,6 @@ function shuffle(deck) {
 function initializeGame(gameId) {
   const deck = generateDeck();
   shuffle(deck);
-  console.log("GAMES: ", games);
   const game = games[gameId];
 
   // Distribute cards to players

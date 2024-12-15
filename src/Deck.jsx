@@ -2,8 +2,10 @@ import HiddenCard from "./HiddenCard";
 import { useGameContext } from "./context/GameContext";
 
 const Deck = () => {
-  const { state } = useGameContext();
-  const deckLength = state.deck.length;
+  const {
+    state: { gameState },
+  } = useGameContext();
+  const deckLength = gameState.deck.length;
 
   return (
     <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>

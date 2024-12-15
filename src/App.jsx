@@ -12,17 +12,17 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export const socket = io(process.env.REACT_APP_SERVER_URL);
 
-const HomePage = ({ user, setUser, setConnected }) => {
+const HomePage = () => {
+  const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
   const handleConnect = () => {
-    socket.emit("userConnect", user.toLowerCase());
+    socket.emit("userConnect", username.toLowerCase());
   };
 
   useEffect(() => {
-    localStorage.removeItem("gameState");
-    socket.on("currentUserID", (gameId) => {
-      setConnected(true);
+    socket.on("currentUserID", ({ gameId, username }) => {
+      localStorage.setItem("username", username);
       navigate(`/game/${gameId}`);
     });
   }, []);
@@ -31,126 +31,132 @@ const HomePage = ({ user, setUser, setConnected }) => {
     <div className="main-board">
       <ResetButton />
       <GameTitle />
-      <div>
+      <form>
         <input
           type="text"
           placeholder="Enter your name"
-          onChange={(e) => setUser(e.target.value)}
+          onChange={(e) => setUsername(e.target.value)}
         />
-        <button disabled={!user} onClick={handleConnect}>
+        <button disabled={!username} onClick={handleConnect}>
           Start Game
         </button>
-      </div>
+      </form>
     </div>
   );
 };
 
-const JoinGame = ({ user, setUser, setConnected }) => {
-  const { gameId } = useParams();
-
-  const handleJoin = () => {
-    socket.emit("joinGame", { gameId, user });
-    setUser(user);
-    setConnected(true);
+// Loads if the user is already in localStorage, but there is no game
+const StartGame = ({ username }) => {
+  const handleConnect = () => {
+    socket.emit("userConnect", username.toLowerCase());
   };
 
   return (
     <div className="main-board">
       <GameTitle />
-      <div>
-        <input
-          type="text"
-          placeholder="Enter your name"
-          onChange={(e) => setUser(e.target.value)}
-        />
-        <button disabled={!user} onClick={handleJoin}>
-          Join
-        </button>
-      </div>
+      <h1>Welcome back, {username}!</h1>
+      <button onClick={handleConnect}>Start Game</button>
     </div>
   );
 };
 
-const ExistingGame = ({ user, setUser }) => {
+const JoinGame = ({ user }) => {
+  const [username, setUsername] = useState("");
+  const { gameId } = useParams();
   const navigate = useNavigate();
-  // TODO: FLUSH OUT JOINING CURRENT GAME
+
+  const handleJoin = () => {
+    socket.emit("joinGame", { gameId, user: user ?? username });
+    localStorage.setItem("username", user ?? username);
+  };
+
+  useEffect(() => {
+    socket.on("gameError", (err) => {
+      navigate("/");
+      alert(err);
+    });
+  }, []);
+
   return (
     <div className="main-board">
       <GameTitle />
-      <h2>Looks like theres already a game in progress</h2>
-      <button
-        onClick={() => {
-          localStorage.removeItem("gameState");
-          setUser();
-          navigate("/");
-        }}
-      >
-        Start a new game
-      </button>{" "}
-      OR <button onClick={() => setUser()}>Continue current game</button>
+      {!user ? (
+        <div>
+          <input
+            type="text"
+            placeholder="Enter your name"
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <button disabled={!username} onClick={handleJoin}>
+            Join
+          </button>
+        </div>
+      ) : (
+        <div>
+          <h1>Welcome back, {user}!</h1>
+          <button onClick={handleJoin}>Join</button>
+        </div>
+      )}
     </div>
   );
 };
 
 const GamePage = ({ user }) => {
-  const { state } = useGameContext();
+  const {
+    state: { gameState },
+  } = useGameContext();
+  const navigate = useNavigate();
 
   const handleCopyUrl = () => {
     const currentUrl = window.location.href;
     navigator.clipboard.writeText(currentUrl);
   };
 
+  useEffect(() => {
+    socket.on("gameError", (err) => {
+      navigate("/");
+      alert(err);
+    });
+  }, []);
+
   return (
     <div className="main-board">
       <ResetButton />
       <GameTitle />
-      {state.players.length < 2 && (
+      {gameState.players.length < 2 && (
         <button onClick={handleCopyUrl}>Invite another player</button>
       )}
       <GameWrapper user={user} />
-      {state.phase === Phases.END && <ConfettiDisplay />}
+      {gameState.phase === Phases.END && <ConfettiDisplay />}
     </div>
   );
 };
 
 const App = () => {
   const [user, setUser] = useState(null);
-  const [connected, setConnected] = useState(false);
-  const gameInProgress = !!localStorage.getItem("gameState");
+  const {
+    state: { gameState },
+  } = useGameContext();
 
   useEffect(() => {
-    socket.on("gameError", (err) => {
-      // Should be a modal to direct back to "/"
-      alert(err);
-    });
-  }, []);
+    // Sets to null if no user in localStorage
+    setUser(localStorage.getItem("username"));
+  }, [user, gameState]);
 
   return (
     <Router>
       <Routes>
         <Route
           path="/"
-          element={
-            <HomePage
-              user={user}
-              setUser={setUser}
-              setConnected={setConnected}
-            />
-          }
+          element={user ? <StartGame username={user} /> : <HomePage />}
         />
         <Route
           path="/game/:gameId"
           element={
-            connected ? (
+            user && gameState ? (
               <GamePage user={user} />
-            ) : gameInProgress ? (
-              <ExistingGame user={user} setUser={setUser} />
             ) : (
-              <JoinGame
-                user={user}
-                setUser={setUser}
-                setConnected={setConnected}
-              />
+              <JoinGame user={user} />
             )
           }
         />

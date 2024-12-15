@@ -25,7 +25,7 @@ io.on("connection", (socket) => {
   // USER CLICKS CONNECT BUTTON
   socket.on("userConnect", (username) => {
     gameId = uuidv4();
-    socket.emit("currentUserID", gameId);
+    socket.emit("currentUserID", { gameId, username });
     games[gameId] = {
       players: [
         {
@@ -48,15 +48,21 @@ io.on("connection", (socket) => {
   socket.on("joinGame", ({ gameId, user }) => {
     if (!games[gameId]) {
       socket.emit("gameError", "Game not found");
+      return;
     }
-    games[gameId].players.push({
-      id: user,
-      hand: [],
-      faceUp: [],
-      faceDown: [],
-      ready: false,
-    });
-    console.log("GAMES: ", games);
+    // does user already exist in game?
+    if (games[gameId]?.players.some((p) => p.id === user)) {
+      io.emit("gameStateUpdate", games[gameId]);
+      return;
+    } else {
+      games[gameId]?.players.push({
+        id: user,
+        hand: [],
+        faceUp: [],
+        faceDown: [],
+        ready: false,
+      });
+    }
     io.emit("gameStateUpdate", games[gameId]);
   });
 
@@ -102,6 +108,7 @@ io.on("connection", (socket) => {
     const gameState = games[gameId];
     if (!gameState) {
       socket.emit("gameError", "Game not found");
+      return;
     }
     const player = gameState.players.find((p) => p.id === userId);
     if (player) {
@@ -147,7 +154,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("playCards", (payload) => {
-    const { userId, cards } = payload;
+    const { gameId, userId, cards } = payload;
+    const gameState = games[gameId];
+
+    if (!gameState) {
+      socket.emit("gameError", "Game not found");
+      return;
+    }
+
     gameState.lastPlayed = cards;
     const playerIndex = gameState.players.findIndex(
       (player) => player.id === userId
@@ -194,7 +208,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("pickupDeck", (payload) => {
-    const { userId } = payload;
+    const { gameId, userId } = payload;
+    const gameState = games[gameId];
+
+    if (!gameState) {
+      socket.emit("gameError", "Game not found");
+      return;
+    }
+
     // Find the player in the game state
     const playerIndex = gameState.players.findIndex(
       (player) => player.id === userId
@@ -209,6 +230,26 @@ io.on("connection", (socket) => {
 
     player.hand = [...player.hand, ...gameState.cardPile];
 
+    // sort the player's hand
+    player.hand = player.hand.sort((a, b) => {
+      const rankOrder = [
+        "2",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "j",
+        "q",
+        "k",
+        "a",
+        "3",
+        "10",
+      ];
+      return rankOrder.indexOf(a.rank) - rankOrder.indexOf(b.rank);
+    });
+
     gameState.cardPile = [];
     gameState.currentTurn =
       gameState.players[(playerIndex + 1) % gameState.players.length].id;
@@ -218,7 +259,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("deadFlip", (payload) => {
-    const { userId, card } = payload;
+    const { gameId, userId, card } = payload;
+    const gameState = games[gameId];
+
+    if (!gameState) {
+      socket.emit("gameError", "Game not found");
+    }
+
     gameState.lastPlayed = [card];
     const player = gameState.players.find((p) => p.id === userId);
     if (!player) return;
@@ -263,7 +310,13 @@ io.on("connection", (socket) => {
     io.emit("gameStateUpdate", gameState);
   });
 
-  socket.on("clearGame", () => {
+  socket.on("clearGame", (gameId) => {
+    const gameState = games[gameId];
+    if (!gameState) {
+      socket.emit("gameError", "Game not found");
+      return;
+    }
+
     gameState.players = gameState.players.map((player) => ({
       ...player,
       hand: [],

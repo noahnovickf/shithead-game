@@ -24,22 +24,24 @@ const cardRankToWord = {
 };
 
 const GameWrapper = ({ user }) => {
-  const { state } = useGameContext();
+  const {
+    state: { gameState },
+  } = useGameContext();
   return (
     <Fragment>
       <DealButton user={user} />
       <Opponent user={user} />
-      {state.phase === Phases.PLAYING && (
+      {gameState?.phase === Phases.PLAYING && (
         <Fragment>
           <div style={{ display: "flex", gap: "24px" }}>
             <CardPile user={user} />
             <Deck />
           </div>
-          {state?.lastPlayed && (
+          {gameState?.lastPlayed && (
             <h3 style={{ marginBottom: 0 }}>
-              {`Last played: ${state.lastPlayed.length} ${
-                cardRankToWord[state.lastPlayed[0].rank]
-              }${state.lastPlayed.length > 1 ? "'s" : ""}`}
+              {`Last played: ${gameState?.lastPlayed.length} ${
+                cardRankToWord[gameState?.lastPlayed[0].rank]
+              }${gameState.lastPlayed.length > 1 ? "'s" : ""}`}
             </h3>
           )}
         </Fragment>

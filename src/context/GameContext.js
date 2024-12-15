@@ -1,43 +1,30 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { io } from "socket.io-client";
-import { Phases } from "../phases";
 
 // Actions
 const actions = {
+  SET_USERNAME: "SET_USERNAME",
   UPDATE_GAME_STATE: "UPDATE_GAME_STATE",
 };
 
-// Function to save state to localStorage
-const saveStateToLocalStorage = (state) => {
-  localStorage.setItem("gameState", JSON.stringify(state));
-};
-
-// Function to load state from localStorage
-const loadStateFromLocalStorage = () => {
-  const savedState = localStorage.getItem("gameState");
-  return savedState ? JSON.parse(savedState) : null;
+// Function to load username from localStorage
+const loadUsernameFromLocalStorage = () => {
+  return localStorage.getItem("username") || null;
 };
 
 // Initial State
-const defaultInitialState = {
-  players: [], // Store players and their cards
-  currentTurn: null, // Track whose turn it is
-  cardPile: [], // Cards played so far
-  deck: [], // Remaining cards in the deck
-  phase: Phases.START, // Game phase
+const initialState = {
+  username: loadUsernameFromLocalStorage(), // Keep the username in the browser
+  gameState: null, // Game state from the server
 };
-
-// Combine loaded state with default initial state
-const initialState = loadStateFromLocalStorage() || defaultInitialState;
 
 // Reducer
 const gameReducer = (state, action) => {
   switch (action.type) {
-    case actions.UPDATE_GAME_STATE: {
-      const newState = { ...state, ...action.payload };
-      saveStateToLocalStorage(newState); // Save updated state to localStorage
-      return newState;
-    }
+    case actions.SET_USERNAME:
+      return { ...state, username: action.payload };
+    case actions.UPDATE_GAME_STATE:
+      return { ...state, gameState: action.payload };
     default:
       return state;
   }
@@ -54,7 +41,7 @@ export const GameProvider = ({ children }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
 
   useEffect(() => {
-    // Load game state from server on "gameStateUpdate"
+    // Listen for game state updates from the server
     socket.on("gameStateUpdate", (newGameState) => {
       dispatch({
         type: actions.UPDATE_GAME_STATE,
@@ -68,7 +55,7 @@ export const GameProvider = ({ children }) => {
   }, []);
 
   return (
-    <GameContext.Provider value={{ state, dispatch, actions }}>
+    <GameContext.Provider value={{ state, dispatch, actions, socket }}>
       {children}
     </GameContext.Provider>
   );

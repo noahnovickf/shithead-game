@@ -2,7 +2,7 @@ import { useGameContext } from "./context/GameContext";
 import Card from "./Card";
 import HiddenCard from "./HiddenCard";
 import "./gameboard.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "./App";
 import {
   isCardDuplicate,
@@ -14,9 +14,11 @@ import { Phases } from "./phases";
 import { useParams } from "react-router-dom";
 
 const Gameboard = ({ user }) => {
-  const { state } = useGameContext();
+  const {
+    state: { gameState },
+  } = useGameContext();
   const { gameId } = useParams();
-  const player = state.players.find((p) => p.id === user);
+  const player = gameState.players.find((p) => p.id === user);
   const [selectedHandCard, setSelectedHandCard] = useState(null);
   const [selectedFaceUpCard, setSelectedFaceUpCard] = useState(null);
   const [multipleCards, setMultipleCards] = useState([]);
@@ -35,7 +37,7 @@ const Gameboard = ({ user }) => {
   };
 
   const handleCardClick = (card, location) => {
-    if (state.phase === Phases.SWAP) {
+    if (gameState.phase === Phases.SWAP) {
       if (location === "hand") {
         if (selectedFaceUpCard) {
           performSwap(card, selectedFaceUpCard);
@@ -62,11 +64,11 @@ const Gameboard = ({ user }) => {
         }
       }
     } else if (
-      state.phase === Phases.PLAYING &&
-      state.currentTurn === user &&
+      gameState.phase === Phases.PLAYING &&
+      gameState.currentTurn === user &&
       location === "hand"
     ) {
-      const topCard = state.cardPile[state.cardPile.length - 1];
+      const topCard = gameState.cardPile[gameState.cardPile.length - 1];
       if (isCardPlayable(card, topCard)) {
         if (isCardDuplicate(card, player.hand)) {
           if (
@@ -80,6 +82,7 @@ const Gameboard = ({ user }) => {
             )
           ) {
             socket.emit("playCards", {
+              gameId,
               userId: user,
               cards: multipleCards,
             });
@@ -91,7 +94,7 @@ const Gameboard = ({ user }) => {
           }
         } else {
           // Play single card, empty duplicate cards
-          socket.emit("playCards", { userId: user, cards: [card] });
+          socket.emit("playCards", { gameId, userId: user, cards: [card] });
           setMultipleCards([]);
         }
       } else {
@@ -107,12 +110,12 @@ const Gameboard = ({ user }) => {
       className="gameboard"
       style={{
         backgroundColor:
-          state.currentTurn === user && state.phase === Phases.PLAYING
+          gameState.currentTurn === user && gameState.phase === Phases.PLAYING
             ? "lightblue"
             : "",
       }}
     >
-      {state.phase === Phases.SWAP && <SwapCardButtons user={user} />}
+      {gameState.phase === Phases.SWAP && <SwapCardButtons user={user} />}
       {player && (
         <div className="card-container">
           <div className="table-card-container">

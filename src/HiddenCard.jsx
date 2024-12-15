@@ -1,11 +1,15 @@
 import { socket } from "./App";
 import { useGameContext } from "./context/GameContext";
 import useIsMobile from "./isMobileHook";
+import { useParams } from "react-router-dom";
 
 const HiddenCard = ({ user, card, opponent }) => {
-  const { state } = useGameContext();
+  const {
+    state: { gameState },
+  } = useGameContext();
+  const { gameId } = useParams();
   const isMobile = useIsMobile();
-  const player = state.players.find((p) => p.id === user);
+  const player = gameState.players.find((p) => p.id === user);
 
   return (
     <button
@@ -22,9 +26,9 @@ const HiddenCard = ({ user, card, opponent }) => {
         if (
           player?.hand.length === 0 &&
           player.faceUp.length === 0 &&
-          state.currentTurn === user
+          gameState.currentTurn === user
         ) {
-          socket.emit("deadFlip", { userId: user, card: card });
+          socket.emit("deadFlip", { gameId, userId: user, card: card });
         }
       }}
     />

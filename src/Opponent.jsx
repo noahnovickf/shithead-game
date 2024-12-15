@@ -5,15 +5,17 @@ import "./gameboard.css";
 import { Phases } from "./phases";
 
 const Opponent = ({ user }) => {
-  const { state } = useGameContext();
-  const opponent = state.players.find((player) => player.id !== user);
+  const {
+    state: { gameState },
+  } = useGameContext();
+  const opponent = gameState.players.find((player) => player.id !== user);
 
   return (
     <div
       className="opponent-gameboard"
       style={{
         backgroundColor:
-          state.currentTurn !== user && state.phase === Phases.PLAYING
+          gameState.currentTurn !== user && gameState.phase === Phases.PLAYING
             ? "lightblue"
             : "",
       }}
@@ -22,19 +24,24 @@ const Opponent = ({ user }) => {
         <div>
           <div className="table-card-container">
             <div className="face-down-row">
-              {opponent.faceDown.map((i) => (
+              {opponent.faceDown.map((_card, i) => (
                 <HiddenCard key={i} opponent />
               ))}
             </div>
             <div className="face-up-row">
-              {opponent.faceUp.map(({ rank, suit }, i) => (
-                <Card rank={rank} suit={suit} key={i} opponent />
+              {opponent.faceUp.map(({ rank, suit }) => (
+                <Card
+                  rank={rank}
+                  suit={suit}
+                  key={`${rank}-${suit}`}
+                  opponent
+                />
               ))}
             </div>
           </div>
         </div>
       )}
-      {state.phase === Phases.PLAYING && (
+      {gameState.phase === Phases.PLAYING && (
         <h3 style={{ margin: 0 }}>
           Cards in opponent's hand: {opponent.hand.length}
         </h3>
