@@ -70,6 +70,9 @@ io.on("connection", (socket) => {
   socket.on("swapCards", (payload) => {
     const { userId, selectedHandCard, selectedFaceUpCard, gameId } = payload;
     const gameState = games[gameId];
+    if (!gameState) {
+      socket.emit("gameError", "Game not found");
+    }
 
     const player = gameState.players.find((p) => p.id === userId);
     if (!player) return;
@@ -94,7 +97,12 @@ io.on("connection", (socket) => {
   });
 
   // READY BUTTON CLICKED
-  socket.on("ready", (userId) => {
+  socket.on("ready", (payload) => {
+    const { userId, gameId } = payload;
+    const gameState = games[gameId];
+    if (!gameState) {
+      socket.emit("gameError", "Game not found");
+    }
     const player = gameState.players.find((p) => p.id === userId);
     if (player) {
       player.ready = true;

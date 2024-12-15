@@ -1,12 +1,14 @@
 import { socket } from "./App";
 import { useGameContext } from "./context/GameContext";
+import { useParams } from "react-router-dom";
 
 const SwapCardButtons = ({ user }) => {
   const { state } = useGameContext();
+  const { gameId } = useParams();
   const player = state.players.find((p) => p.id === user);
 
   const handleReadyClick = () => {
-    socket.emit("ready", user);
+    socket.emit("ready", { userId: user, gameId });
   };
 
   return (
