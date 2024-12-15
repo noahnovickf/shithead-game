@@ -98,7 +98,7 @@ const Gameboard = ({ user }) => {
 
     return;
   };
-  console.log("MC", multipleCards);
+
   return (
     <div
       className="gameboard"

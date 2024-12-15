@@ -1,9 +1,10 @@
 import { socket } from "./App";
 import { useGameContext } from "./context/GameContext";
+import useIsMobile from "./isMobileHook";
 
 const HiddenCard = ({ user, card, opponent }) => {
   const { state } = useGameContext();
-
+  const isMobile = useIsMobile();
   const player = state.players.find((p) => p.id === user);
 
   return (
@@ -12,8 +13,8 @@ const HiddenCard = ({ user, card, opponent }) => {
         backgroundImage: `url('/CardBack.svg')`,
         backgroundSize: "cover", // Ensures the image covers the button
         backgroundPosition: "center", // Centers the image
-        height: opponent ? "100px" : "200px",
-        width: opponent ? "75px" : "150px",
+        height: isMobile || opponent ? "125px" : "200px",
+        width: isMobile || opponent ? "90px" : "150px",
         border: "2px solid black", // Optional: removes button border
         borderRadius: "10px", // Optional: adds border radius
       }}

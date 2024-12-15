@@ -22,7 +22,7 @@ const Opponent = ({ user }) => {
         <div>
           <div className="table-card-container">
             <div className="face-down-row">
-              {opponent.faceDown.map(({ rank, suit }, i) => (
+              {opponent.faceDown.map((i) => (
                 <HiddenCard key={i} opponent />
               ))}
             </div>
