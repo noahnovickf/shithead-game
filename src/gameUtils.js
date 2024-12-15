@@ -58,10 +58,10 @@ export const isCardDuplicate = (card, hand) => {
 export const updateCardSpacing = (handSize) => {
   const root = document.documentElement;
 
-  if (handSize > 3) {
+  if (handSize > 3 && handSize < 12) {
     const spacing = handSize * -8.5;
     root.style.setProperty("--dynamic-margin", `${spacing}px`);
-  } else {
-    root.style.setProperty("--dynamic-margin", "0px");
-  }
+  } else if (handSize >= 12) {
+    root.style.setProperty("--dynamic-margin", "-125px");
+  } else root.style.setProperty("--dynamic-margin", "0px");
 };

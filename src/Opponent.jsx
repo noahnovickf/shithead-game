@@ -10,7 +10,7 @@ const Opponent = ({ user }) => {
 
   return (
     <div
-      className="gameboard"
+      className="opponent-gameboard"
       style={{
         backgroundColor:
           state.currentTurn !== user && state.phase === Phases.PLAYING
