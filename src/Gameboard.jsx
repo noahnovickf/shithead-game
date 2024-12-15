@@ -109,9 +109,6 @@ const Gameboard = ({ user }) => {
             : "",
       }}
     >
-      {state.phase === Phases.START && state.players.length === 1 && (
-        <h3>Waiting on another player</h3>
-      )}
       {state.phase === Phases.SWAP && <SwapCardButtons user={user} />}
       {player && (
         <div className="card-container">

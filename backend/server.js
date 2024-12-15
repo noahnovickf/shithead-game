@@ -3,8 +3,9 @@ const app = express();
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
-const gameState = require("./gameState");
+const { games } = require("./gameState");
 require("dotenv").config();
+const { v4: uuidv4 } = require("uuid");
 const { initializeGame, Phases, isCardPlayable } = require("./utils");
 app.use(cors());
 
@@ -22,23 +23,47 @@ io.on("connection", (socket) => {
   console.log("CONNECTED: ", socket.id);
 
   // USER CLICKS CONNECT BUTTON
-  socket.on("userConnect", (data) => {
-    // SERVER SENDS BACK USER ID
-    socket.emit("currentUserID", data);
-    gameState.players.length < 2 &&
-      gameState.players.push({
-        id: data,
-        hand: [],
-        faceUp: [],
-        faceDown: [],
-      });
-    io.emit("gameStateUpdate", gameState);
+  socket.on("userConnect", (username) => {
+    gameId = uuidv4();
+    socket.emit("currentUserID", gameId);
+    games[gameId] = {
+      players: [
+        {
+          id: username,
+          hand: [],
+          faceUp: [],
+          faceDown: [],
+          ready: false,
+        },
+      ],
+      deck: [],
+      lastPlayed: null,
+      cardPile: [],
+      currentTurn: null,
+      phase: Phases.START,
+    };
+    io.emit("gameStateUpdate", games[gameId]);
+  });
+
+  socket.on("joinGame", ({ gameId, user }) => {
+    if (!games[gameId]) {
+      socket.emit("gameError", "Game not found");
+    }
+    games[gameId].players.push({
+      id: user,
+      hand: [],
+      faceUp: [],
+      faceDown: [],
+      ready: false,
+    });
+    console.log("GAMES: ", games);
+    io.emit("gameStateUpdate", games[gameId]);
   });
 
   // DEAL BUTTON CLICKED, CARDS ARE DEALT
-  socket.on("gameStart", () => {
-    initializeGame();
-    io.emit("gameStateUpdate", gameState);
+  socket.on("gameStart", (gameId) => {
+    initializeGame(gameId);
+    io.emit("gameStateUpdate", games[gameId]);
   });
 
   // SWAP CARDS FROM FACE UP TO HAND
@@ -245,8 +270,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    delete gameState.players[socket.id];
-    console.log("User disconnected", socket.id, gameState.players);
+    // delete gameState.players[socket.id];
+    console.log("User disconnected", socket.id);
   });
 });
 const PORT = process.env.PORT || 3001;

@@ -1,11 +1,30 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Ensures the height covers the entire viewport */
+  overflow: hidden; /* Prevents unintended scrolling */
+}
+
 .main-board {
+  background: green;
+  background-attachment: fixed; /* Keeps the background fixed during scroll */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  overflow: auto; /* Allows internal scrolling of content if needed */
+}
+
+/* .main-board {
   background: green;
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100vh;
   width: 100vw;
-}
+} */
 
 .gameboard {
   text-align: center;
@@ -110,4 +129,15 @@ input {
 
 .reset-button:hover {
   background-color: #ff1a1a; /* Darker color on hover */
+}
+
+/* Styles for smaller screens */
+@media (max-width: 768px) {
+  .reset-button {
+    padding: 5px 10px;
+    font-size: 12px;
+    top: 10px;
+    right: 10px;
+    border-radius: 3px;
+  }
 }

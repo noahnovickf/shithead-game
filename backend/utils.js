@@ -1,4 +1,4 @@
-const gameState = require("./gameState");
+const { games } = require("./gameState");
 
 const Phases = {
   START: "start",
@@ -45,21 +45,23 @@ function shuffle(deck) {
   return deck;
 }
 
-function initializeGame() {
+function initializeGame(gameId) {
   const deck = generateDeck();
   shuffle(deck);
+  console.log("GAMES: ", games);
+  const game = games[gameId];
 
   // Distribute cards to players
-  Object.keys(gameState.players).forEach((playerId) => {
-    gameState.players[playerId].faceDown = deck.splice(0, 3); // 3 face-down cards
-    gameState.players[playerId].faceUp = deck.splice(0, 3); // 3 face-up cards
-    gameState.players[playerId].hand = deck.splice(0, 3); // 3 cards in hand
-    gameState.players[playerId].ready = false;
+  Object.keys(game.players).forEach((playerId) => {
+    game.players[playerId].faceDown = deck.splice(0, 3); // 3 face-down cards
+    game.players[playerId].faceUp = deck.splice(0, 3); // 3 face-up cards
+    game.players[playerId].hand = deck.splice(0, 3); // 3 cards in hand
+    game.players[playerId].ready = false;
   });
-  gameState.lastPlayed = null;
-  gameState.deck = deck; // Remaining cards for drawing
-  gameState.cardPile = []; // Start with an empty pile
-  gameState.phase = Phases.SWAP;
+  game.lastPlayed = null;
+  game.deck = deck; // Remaining cards for drawing
+  game.cardPile = []; // Start with an empty pile
+  game.phase = Phases.SWAP;
 }
 
 const isCardPlayable = (card, topCard) => {
