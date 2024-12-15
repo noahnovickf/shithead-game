@@ -12,6 +12,7 @@ import {
 import SwapCardButtons from "./SwapCardButtons";
 import { Phases } from "./phases";
 import { useParams } from "react-router-dom";
+import useIsMobile from "./isMobileHook";
 
 const Gameboard = ({ user }) => {
   const {
@@ -23,7 +24,9 @@ const Gameboard = ({ user }) => {
   const [selectedFaceUpCard, setSelectedFaceUpCard] = useState(null);
   const [multipleCards, setMultipleCards] = useState([]);
 
-  updateCardSpacing(player?.hand?.length);
+  const isMobile = useIsMobile();
+
+  updateCardSpacing(player?.hand?.length, isMobile);
 
   const performSwap = (handCard, faceUpCard) => {
     socket.emit("swapCards", {

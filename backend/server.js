@@ -189,7 +189,9 @@ io.on("connection", (socket) => {
         player.hand.push(topCard);
       }
     }
-
+    if (player.faceDown.length === 0 && player.hand.length === 0) {
+      gameState.phase = Phases.END;
+    }
     // UPDATE PILE
     gameState.cardPile = [...gameState.cardPile, ...cards];
 

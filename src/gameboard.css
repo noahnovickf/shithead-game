@@ -74,11 +74,17 @@ body {
 
 .hand {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; /* Ensure cards align at the start */
   gap: 10px; /* Spacing between cards */
   margin-top: 20px;
-  /* max-width: 500px; Set maximum width for container */
-  overflow: scroll; /* Clip overflowing content */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  padding: 0 15px; /* Add padding to avoid clipped edges */
+  max-width: 100%;
+  box-sizing: border-box; /* Include padding in the container width */
+}
+
+.hand > * {
+  scroll-snap-align: center; /* Optional: Align cards when scrolling */
 }
 
 :root {

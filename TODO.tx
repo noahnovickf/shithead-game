@@ -1,12 +1,6 @@
 
 /* TODO:
-- game reset has to be way better... 
-- End game screen
 - refactor components
-- mobile css
-- Title change
-- end game not working
 - deal only for player 1
-- sort hand
-- mobile cards dissapear
+- maybe debounce?
 */

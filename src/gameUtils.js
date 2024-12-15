@@ -55,13 +55,15 @@ export const isCardDuplicate = (card, hand) => {
   return duplicates.length > 1;
 };
 
-export const updateCardSpacing = (handSize) => {
+export const updateCardSpacing = (handSize, isMobile) => {
   const root = document.documentElement;
 
+  const dynamicMargin = isMobile ? -6.5 : -8.5;
+
   if (handSize > 3 && handSize < 12) {
-    const spacing = handSize * -8.5;
+    const spacing = handSize * dynamicMargin;
     root.style.setProperty("--dynamic-margin", `${spacing}px`);
   } else if (handSize >= 12) {
-    root.style.setProperty("--dynamic-margin", "-125px");
+    root.style.setProperty("--dynamic-margin", isMobile ? "-75px" : "-125px");
   } else root.style.setProperty("--dynamic-margin", "0px");
 };
