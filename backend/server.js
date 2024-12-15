@@ -68,7 +68,9 @@ io.on("connection", (socket) => {
 
   // SWAP CARDS FROM FACE UP TO HAND
   socket.on("swapCards", (payload) => {
-    const { userId, selectedHandCard, selectedFaceUpCard } = payload;
+    const { userId, selectedHandCard, selectedFaceUpCard, gameId } = payload;
+    const gameState = games[gameId];
+
     const player = gameState.players.find((p) => p.id === userId);
     if (!player) return;
 

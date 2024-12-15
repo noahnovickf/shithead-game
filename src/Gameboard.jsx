@@ -11,9 +11,11 @@ import {
 } from "./gameUtils";
 import SwapCardButtons from "./SwapCardButtons";
 import { Phases } from "./phases";
+import { useParams } from "react-router-dom";
 
 const Gameboard = ({ user }) => {
   const { state } = useGameContext();
+  const { gameId } = useParams();
   const player = state.players.find((p) => p.id === user);
   const [selectedHandCard, setSelectedHandCard] = useState(null);
   const [selectedFaceUpCard, setSelectedFaceUpCard] = useState(null);
@@ -23,6 +25,7 @@ const Gameboard = ({ user }) => {
 
   const performSwap = (handCard, faceUpCard) => {
     socket.emit("swapCards", {
+      gameId,
       userId: user,
       selectedHandCard: handCard,
       selectedFaceUpCard: faceUpCard,
