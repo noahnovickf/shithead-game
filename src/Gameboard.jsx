@@ -66,8 +66,12 @@ const Gameboard = ({ user }) => {
       const topCard = state.cardPile[state.cardPile.length - 1];
       if (isCardPlayable(card, topCard)) {
         if (isCardDuplicate(card, player.hand)) {
-          // If click selected card again, will play cards
           if (
+            !multipleCards.find((c) => c.rank === card.rank) &&
+            multipleCards.length >= 1
+          ) {
+            setMultipleCards([card]);
+          } else if (
             !!multipleCards.find(
               (c) => c.rank === card.rank && c.suit === card.suit
             )
@@ -94,7 +98,7 @@ const Gameboard = ({ user }) => {
 
     return;
   };
-
+  console.log("MC", multipleCards);
   return (
     <div
       className="gameboard"
