@@ -9,6 +9,7 @@ import GameWrapper from "./GameWrapper";
 import ResetButton from "./ResetButton";
 import GameTitle from "./GameTitle";
 import { useNavigate, useParams } from "react-router-dom";
+import HomeButton from "./HomeButton";
 
 export const socket = io(process.env.REACT_APP_SERVER_URL);
 
@@ -30,6 +31,7 @@ const HomePage = () => {
   return (
     <div className="main-board">
       <ResetButton />
+      <HomeButton />
       <GameTitle />
       <form>
         <input
@@ -54,8 +56,13 @@ const StartGame = ({ username }) => {
   return (
     <div className="main-board">
       <GameTitle />
-      <h1>Welcome back, {username}!</h1>
-      <button onClick={handleConnect}>Start Game</button>
+      <div className="header-with-button">
+        <h1>
+          Welcome back,{" "}
+          <span style={{ textTransform: "capitalize" }}>{username}</span>!
+        </h1>
+        <button onClick={handleConnect}>Start Game</button>
+      </div>
     </div>
   );
 };
@@ -92,8 +99,11 @@ const JoinGame = ({ user }) => {
           </button>
         </div>
       ) : (
-        <div>
-          <h1>Welcome back, {user}!</h1>
+        <div className="header-with-button">
+          <h1>
+            Welcome back,{" "}
+            <span style={{ textTransform: "capitalize" }}>{user}</span>!
+          </h1>
           <button onClick={handleJoin}>Join</button>
         </div>
       )}
@@ -105,9 +115,11 @@ const GamePage = ({ user }) => {
   const {
     state: { gameState },
   } = useGameContext();
+  const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
 
   const handleCopyUrl = () => {
+    setCopied(true);
     const currentUrl = window.location.href;
     navigator.clipboard.writeText(currentUrl);
   };
@@ -117,15 +129,21 @@ const GamePage = ({ user }) => {
       navigate("/");
       alert(err);
     });
+    //  clear copied state after 3 seconds
+    const timeout = setTimeout(() => {
+      setCopied(false);
+    }, 3000);
   }, []);
 
   return (
     <div className="main-board">
       <ResetButton />
+      <HomeButton />
       <GameTitle />
       {gameState.players.length < 2 && (
         <button onClick={handleCopyUrl}>Invite another player</button>
       )}
+      {copied && <h3>URL copied to clipboard!</h3>}
       <GameWrapper user={user} />
       {gameState.phase === Phases.END && <ConfettiDisplay />}
     </div>
