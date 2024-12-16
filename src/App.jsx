@@ -9,6 +9,7 @@ import GameWrapper from "./GameWrapper";
 import ResetButton from "./ResetButton";
 import GameTitle from "./GameTitle";
 import { useNavigate, useParams } from "react-router-dom";
+import HomeButton from "./HomeButton";
 
 export const socket = io(process.env.REACT_APP_SERVER_URL);
 
@@ -30,6 +31,7 @@ const HomePage = () => {
   return (
     <div className="main-board">
       <ResetButton />
+      <HomeButton />
       <GameTitle />
       <form>
         <input
@@ -136,6 +138,7 @@ const GamePage = ({ user }) => {
   return (
     <div className="main-board">
       <ResetButton />
+      <HomeButton />
       <GameTitle />
       {gameState.players.length < 2 && (
         <button onClick={handleCopyUrl}>Invite another player</button>

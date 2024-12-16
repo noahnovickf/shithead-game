@@ -133,6 +133,25 @@ input {
   background-color: darkolivegreen; /* Darker color on hover */
 }
 
+.home-button {
+  position: fixed;
+  top: 20px; /* Adjust the value to move it vertically */
+  left: 20px; /* Adjust the value to move it horizontally */
+  z-index: 1000; /* Ensure the button is above other content */
+  padding: 10px 20px;
+  background-color: darkgreen; /* Example color for button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+  background-color: darkolivegreen; /* Darker color on hover */
+}
+
 /* Styles for smaller screens */
 @media (max-width: 768px) {
   .reset-button {
