@@ -27,9 +27,11 @@ const GameWrapper = ({ user }) => {
   const {
     state: { gameState },
   } = useGameContext();
+  const isFirstPlayer = gameState?.players[0]?.id === user?.id;
+
   return (
     <Fragment>
-      <DealButton user={user} />
+      {isFirstPlayer && <DealButton user={user} />}
       <Opponent user={user} />
       {gameState?.phase === Phases.PLAYING && (
         <Fragment>

@@ -17,14 +17,9 @@ body {
   overflow: auto; /* Allows internal scrolling of content if needed */
 }
 
-/* .main-board {
-  background: green;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-} */
+h1 {
+  text-shadow: 3px 3px black;
+}
 
 .gameboard {
   text-align: center;
@@ -104,6 +99,7 @@ body {
 button {
   padding: 10px 20px;
   font-size: 1rem;
+  font-weight: bold;
   background: #f0f0f0;
   border: none;
   border-radius: 5px;
@@ -124,7 +120,7 @@ input {
   right: 20px; /* Adjust the value to move it horizontally */
   z-index: 1000; /* Ensure the button is above other content */
   padding: 10px 20px;
-  background-color: #ff4747; /* Example color for button */
+  background-color: darkgreen; /* Example color for button */
   color: white;
   border: none;
   border-radius: 5px;
@@ -134,7 +130,7 @@ input {
 }
 
 .reset-button:hover {
-  background-color: #ff1a1a; /* Darker color on hover */
+  background-color: darkolivegreen; /* Darker color on hover */
 }
 
 /* Styles for smaller screens */
@@ -146,4 +142,12 @@ input {
     right: 10px;
     border-radius: 3px;
   }
+}
+
+.header-with-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
 }
