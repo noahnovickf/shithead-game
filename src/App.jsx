@@ -147,6 +147,14 @@ const GamePage = ({ user }) => {
     });
   }, []);
 
+  const result = gameState?.players?.find((p) => p.id === user)
+    ? gameState.players.find((p) => p.id === user).hand.length === 0 &&
+      gameState.players.find((p) => p.id === user).faceUp.length === 0 &&
+      gameState.players.find((p) => p.id === user).faceDown.length === 0
+      ? "CHAMPION!"
+      : "SHITHEAD!"
+    : "SHITHEAD!";
+
   return (
     <div className="main-board">
       <ResetButton />
@@ -164,8 +172,24 @@ const GamePage = ({ user }) => {
         </button>
       )}
       {copied && <h3>URL copied to clipboard!</h3>}
-      <GameWrapper user={user} />
-      {gameState.phase === Phases.END && <ConfettiDisplay />}
+      {gameState.phase !== Phases.END && <GameWrapper user={user} />}
+
+      {gameState.phase === Phases.END && (
+        <>
+          <h1
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              height: "100vh",
+            }}
+          >
+            Game Over! You're the {result}
+          </h1>
+          <ConfettiDisplay />
+        </>
+      )}
     </div>
   );
 };
