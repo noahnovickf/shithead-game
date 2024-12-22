@@ -178,6 +178,14 @@ input {
     right: 10px;
     border-radius: 3px;
   }
+
+  .home-button {
+    padding: 5px 10px;
+    font-size: 12px;
+    top: 10px;
+    left: 10px;
+    border-radius: 3px;
+  }
 }
 
 .header-with-button {
