@@ -91,7 +91,7 @@ h1 {
   margin-top: 20px;
   overflow-x: auto; /* Enable horizontal scrolling */
   padding: 0 15px; /* Add padding to avoid clipped edges */
-  max-width: 100%;
+  max-width: 90%;
   box-sizing: border-box; /* Include padding in the container width */
 }
 
