@@ -17,7 +17,8 @@ const HomePage = () => {
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
-  const handleConnect = () => {
+  const handleConnect = (e) => {
+    e.preventDefault();
     socket.emit("userConnect", username.toLowerCase());
   };
 
@@ -26,7 +27,7 @@ const HomePage = () => {
       localStorage.setItem("username", username);
       navigate(`/game/${gameId}`);
     });
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="main-board">
@@ -39,7 +40,7 @@ const HomePage = () => {
           placeholder="Enter your name"
           onChange={(e) => setUsername(e.target.value)}
         />
-        <button disabled={!username} onClick={handleConnect}>
+        <button disabled={!username} onClick={(e) => handleConnect(e)}>
           Start Game
         </button>
       </form>
@@ -132,7 +133,6 @@ const GamePage = ({ user }) => {
       navigate("/");
       alert(err);
     });
-    //  clear copied state after 3 seconds
   }, []);
 
   return (
