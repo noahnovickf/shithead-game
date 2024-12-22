@@ -17,8 +17,8 @@ const HiddenCard = ({ user, card, opponent }) => {
         backgroundImage: `url('/CardBack.svg')`,
         backgroundSize: "cover", // Ensures the image covers the button
         backgroundPosition: "center", // Centers the image
-        height: isMobile || opponent ? "125px" : "200px",
-        width: isMobile || opponent ? "90px" : "150px",
+        height: isMobile || opponent ? "125px" : "150px",
+        width: isMobile || opponent ? "90px" : "110px",
         border: "2px solid black", // Optional: removes button border
         borderRadius: "10px", // Optional: adds border radius
       }}

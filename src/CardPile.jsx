@@ -28,8 +28,8 @@ const CardPile = ({ user }) => {
       ) : (
         <div
           style={{
-            height: isMobile ? "125px" : "200px",
-            width: isMobile ? "90px" : "150px",
+            height: isMobile ? "125px" : "150px",
+            width: isMobile ? "90px" : "110px",
             border: "1px solid black",
             borderRadius: "10px",
           }}

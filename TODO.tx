@@ -2,6 +2,7 @@
 TODO:
 - refactor components
 - maybe debounce?
-- sort on deadflip pickup
+- make cards smaller, adjust margin
 - reset game only after game 
+
 
