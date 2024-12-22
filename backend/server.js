@@ -307,6 +307,25 @@ io.on("connection", (socket) => {
           (gameState.players.findIndex((p) => p.id === userId) + 1) %
             gameState.players.length
         ].id;
+      // sort the player's hand
+      player.hand = player.hand.sort((a, b) => {
+        const rankOrder = [
+          "2",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "j",
+          "q",
+          "k",
+          "a",
+          "3",
+          "10",
+        ];
+        return rankOrder.indexOf(a.rank) - rankOrder.indexOf(b.rank);
+      });
     }
 
     io.emit("gameStateUpdate", gameState);

@@ -122,6 +122,9 @@ const GamePage = ({ user }) => {
     setCopied(true);
     const currentUrl = window.location.href;
     navigator.clipboard.writeText(currentUrl);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
   useEffect(() => {
@@ -130,9 +133,6 @@ const GamePage = ({ user }) => {
       alert(err);
     });
     //  clear copied state after 3 seconds
-    const timeout = setTimeout(() => {
-      setCopied(false);
-    }, 3000);
   }, []);
 
   return (

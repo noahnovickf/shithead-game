@@ -1,5 +1,7 @@
 
-/* TODO:
+TODO:
 - refactor components
 - maybe debounce?
-*/
+- sort on deadflip pickup
+- reset game only after game 
+
