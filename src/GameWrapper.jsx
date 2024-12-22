@@ -41,12 +41,12 @@ const GameWrapper = ({ user }) => {
       <Opponent user={user} />
       {gameState?.phase === Phases.PLAYING && (
         <Fragment>
-          <div style={{ display: "flex", gap: "24px" }}>
+          <div style={{ display: "flex", gap: "24px", marginBottom: "24px" }}>
             <CardPile user={user} />
             <Deck />
           </div>
           {gameState?.lastPlayed && (
-            <h3 style={{ marginBottom: 0 }}>
+            <h3 style={{ marginTop: 0 }}>
               {`Last played: ${gameState?.lastPlayed.length} ${
                 cardRankToWord[gameState?.lastPlayed[0].rank]
               }${gameState.lastPlayed.length > 1 ? "'s" : ""}`}

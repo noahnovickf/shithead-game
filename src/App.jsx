@@ -40,7 +40,11 @@ const HomePage = () => {
           placeholder="Enter your name"
           onChange={(e) => setUsername(e.target.value)}
         />
-        <button disabled={!username} onClick={(e) => handleConnect(e)}>
+        <button
+          className="game-button"
+          disabled={!username}
+          onClick={(e) => handleConnect(e)}
+        >
           Start Game
         </button>
       </form>
@@ -62,7 +66,9 @@ const StartGame = ({ username }) => {
           Welcome back,{" "}
           <span style={{ textTransform: "capitalize" }}>{username}</span>!
         </h1>
-        <button onClick={handleConnect}>Start Game</button>
+        <button className="game-button" onClick={handleConnect}>
+          Start Game
+        </button>
       </div>
     </div>
   );
@@ -95,7 +101,11 @@ const JoinGame = ({ user }) => {
             placeholder="Enter your name"
             onChange={(e) => setUsername(e.target.value)}
           />
-          <button disabled={!username} onClick={handleJoin}>
+          <button
+            disabled={!username}
+            onClick={handleJoin}
+            className="game-button"
+          >
             Join
           </button>
         </div>
@@ -105,7 +115,9 @@ const JoinGame = ({ user }) => {
             Welcome back,{" "}
             <span style={{ textTransform: "capitalize" }}>{user}</span>!
           </h1>
-          <button onClick={handleJoin}>Join</button>
+          <button className="game-button" onClick={handleJoin}>
+            Join
+          </button>
         </div>
       )}
     </div>
@@ -141,7 +153,15 @@ const GamePage = ({ user }) => {
       <HomeButton />
       <GameTitle />
       {gameState.players.length < 2 && (
-        <button onClick={handleCopyUrl}>Invite another player</button>
+        <button
+          onClick={handleCopyUrl}
+          style={{
+            marginTop: "20px",
+          }}
+          className="game-button"
+        >
+          Invite another player
+        </button>
       )}
       {copied && <h3>URL copied to clipboard!</h3>}
       <GameWrapper user={user} />

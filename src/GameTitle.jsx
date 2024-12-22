@@ -1,5 +1,5 @@
 const GameTitle = () => {
-  return <h1>Shithead</h1>;
+  return <h1 style={{ marginBottom: 0 }}>Shithead</h1>;
 };
 
 export default GameTitle;

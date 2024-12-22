@@ -20,6 +20,10 @@ const DealButton = ({ user }) => {
     hasEnoughPlayers &&
     gameState.phase === Phases.START && (
       <button
+        className="game-button"
+        style={{
+          marginTop: "20px",
+        }}
         onClick={() => {
           handleGameStart();
         }}

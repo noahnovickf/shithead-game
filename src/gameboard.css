@@ -25,15 +25,32 @@ h1 {
   text-align: center;
   padding: 20px;
   border-radius: 10px;
-  margin: 24px;
+  margin: 0 24px 24px 24px;
   width: 100%;
+}
+
+.game-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: ivory;
+  background: darkgreen;
+  border: 1px solid ivory;
+
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 3px 3px ivory;
+}
+
+.game-button:hover {
+  background: darkslategray;
 }
 
 .opponent-gameboard {
   text-align: center;
   padding: 20px;
   border-radius: 10px;
-  margin: 24px;
+  margin: 0 24px 24px 24px;
 }
 
 .table-card-container {

@@ -23,7 +23,9 @@ const SwapCardButtons = ({ user }) => {
       }}
     >
       {!player?.ready ? (
-        <button onClick={handleReadyClick}>Ready!</button>
+        <button className="game-button" onClick={handleReadyClick}>
+          Ready!
+        </button>
       ) : (
         <h3>Waiting for other player...</h3>
       )}
