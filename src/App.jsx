@@ -10,6 +10,7 @@ import ResetButton from "./ResetButton";
 import GameTitle from "./GameTitle";
 import { useNavigate, useParams } from "react-router-dom";
 import HomeButton from "./HomeButton";
+import Spinner from "./Spinner";
 
 export const socket = io(process.env.REACT_APP_SERVER_URL);
 
@@ -54,7 +55,9 @@ const HomePage = () => {
 
 // Loads if the user is already in localStorage, but there is no game
 const StartGame = ({ username }) => {
+  const [loading, setLoading] = useState(false);
   const handleConnect = () => {
+    setLoading(true);
     socket.emit("userConnect", username.toLowerCase());
   };
 
@@ -66,9 +69,23 @@ const StartGame = ({ username }) => {
           Welcome back,{" "}
           <span style={{ textTransform: "capitalize" }}>{username}</span>!
         </h1>
-        <button className="game-button" onClick={handleConnect}>
-          Start Game
-        </button>
+        {loading ? (
+          <div
+            style={{
+              width: "20%",
+            }}
+          >
+            <Spinner />
+          </div>
+        ) : (
+          <button
+            className="game-button"
+            onClick={handleConnect}
+            disabled={loading}
+          >
+            Start Game
+          </button>
+        )}
       </div>
     </div>
   );
