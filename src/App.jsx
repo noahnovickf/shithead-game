@@ -190,23 +190,6 @@ const GamePage = ({ user }) => {
       )}
       {copied && <h3>URL copied to clipboard!</h3>}
       <GameWrapper user={user} />
-
-      {/* {gameState.phase === Phases.END && (
-        <>
-          <h1
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              textAlign: "center",
-              height: "100vh",
-            }}
-          >
-            Game Over! You're the {result}
-          </h1>
-          <ConfettiDisplay />
-        </>
-      )} */}
     </div>
   );
 };
