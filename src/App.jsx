@@ -189,9 +189,9 @@ const GamePage = ({ user }) => {
         </button>
       )}
       {copied && <h3>URL copied to clipboard!</h3>}
-      {gameState.phase !== Phases.END && <GameWrapper user={user} />}
+      <GameWrapper user={user} />
 
-      {gameState.phase === Phases.END && (
+      {/* {gameState.phase === Phases.END && (
         <>
           <h1
             style={{
@@ -206,7 +206,7 @@ const GamePage = ({ user }) => {
           </h1>
           <ConfettiDisplay />
         </>
-      )}
+      )} */}
     </div>
   );
 };

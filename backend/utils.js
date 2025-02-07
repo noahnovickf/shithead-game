@@ -58,7 +58,7 @@ function initializeGame(gameId) {
     game.players[playerId].ready = false;
   });
   game.lastPlayed = null;
-  game.deck = deck; // Remaining cards for drawing
+  game.deck = []; // Remaining cards for drawing
   game.cardPile = []; // Start with an empty pile
   game.phase = Phases.SWAP;
 }

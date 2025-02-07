@@ -6,6 +6,7 @@ import CardPile from "./CardPile";
 import Deck from "./Deck";
 import Gameboard from "./Gameboard";
 import { useGameContext } from "./context/GameContext";
+import ConfettiDisplay from "./ConfettiDisplay";
 
 const cardRankToWord = {
   2: "Two",
@@ -31,6 +32,7 @@ const GameWrapper = ({ user }) => {
 
   return (
     <Fragment>
+      {gameState?.phase === Phases.END && <ConfettiDisplay />}
       {isFirstPlayer ? (
         <DealButton user={user} />
       ) : (
@@ -39,7 +41,8 @@ const GameWrapper = ({ user }) => {
         )
       )}
       <Opponent user={user} />
-      {gameState?.phase === Phases.PLAYING && (
+      {(gameState?.phase === Phases.PLAYING ||
+        gameState?.phase === Phases.END) && (
         <Fragment>
           <div style={{ display: "flex", gap: "24px", marginBottom: "24px" }}>
             <CardPile user={user} />
