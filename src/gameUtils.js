@@ -64,6 +64,6 @@ export const updateCardSpacing = (handSize, isMobile) => {
     const spacing = handSize * dynamicMargin;
     root.style.setProperty("--dynamic-margin", `${spacing}px`);
   } else if (handSize >= 12) {
-    root.style.setProperty("--dynamic-margin", isMobile ? "-75px" : "-100px");
+    root.style.setProperty("--dynamic-margin", isMobile ? "-60px" : "-85px");
   } else root.style.setProperty("--dynamic-margin", "0px");
 };

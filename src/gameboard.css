@@ -13,8 +13,7 @@ body {
   flex-direction: column;
   align-items: center;
   height: 100vh;
-  width: 100vw;
-  overflow: auto; /* Allows internal scrolling of content if needed */
+  overflow-x: hidden; /* Allows internal scrolling of content if needed */
 }
 
 h1 {
@@ -25,7 +24,6 @@ h1 {
   text-align: center;
   padding: 20px;
   border-radius: 10px;
-  margin: 0 24px 24px 24px;
   width: fit-content;
 }
 
@@ -91,12 +89,20 @@ h1 {
   margin-top: 20px;
   overflow-x: auto; /* Enable horizontal scrolling */
   padding: 0 15px; /* Add padding to avoid clipped edges */
-  max-width: 90%;
+  max-width: 100vw;
   box-sizing: border-box; /* Include padding in the container width */
 }
 
 .hand > * {
   scroll-snap-align: center; /* Optional: Align cards when scrolling */
+}
+
+.hand > :first-child {
+  padding-left: 30px;
+}
+
+.hand > :last-child {
+  padding-right: 30px;
 }
 
 :root {

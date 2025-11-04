@@ -3,8 +3,6 @@ import { io } from "socket.io-client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./gameboard.css";
 import { useGameContext } from "./context/GameContext";
-import { Phases } from "./phases";
-import ConfettiDisplay from "./ConfettiDisplay";
 import GameWrapper from "./GameWrapper";
 import ResetButton from "./ResetButton";
 import GameTitle from "./GameTitle";
@@ -12,7 +10,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import HomeButton from "./HomeButton";
 import Spinner from "./Spinner";
 
-export const socket = io(process.env.REACT_APP_SERVER_URL);
+export const socket = io(
+  process.env.REACT_APP_SERVER_URL || "http://localhost:3001"
+);
 
 const HomePage = () => {
   const [username, setUsername] = useState("");

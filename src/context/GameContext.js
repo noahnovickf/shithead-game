@@ -34,7 +34,7 @@ const gameReducer = (state, action) => {
 const GameContext = createContext();
 
 // Create socket connection
-const socket = io(process.env.REACT_APP_SERVER_URL);
+const socket = io(process.env.REACT_APP_SERVER_URL || "http://localhost:3001");
 
 // Context Provider
 export const GameProvider = ({ children }) => {
