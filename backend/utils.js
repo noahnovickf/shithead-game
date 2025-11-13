@@ -67,18 +67,11 @@ const isCardPlayable = (card, topCard) => {
   // playing on an empty pile is always allowed
   if (!topCard) return true;
 
-  const rankOrder = ["2", "4", "5", "6", "7", "8", "9", "j", "q", "k", "a"];
+  const rankOrder = ["2", "3", "4", "5", "6", "7", "8", "9", "j", "q", "k", "a"];
 
   // If card is a 10 or 3, it can always be played
-  if (card.rank === "10") {
-    return true;
-  }
-  if (card.rank === "3") {
-    return true;
-  }
-
   // If the card is equal in rank to the top card, it can be played
-  if (card.rank === topCard.rank) {
+  if (card.rank === "10" || card.rank === '3' || card.rank === topCard.rank )  {
     return true;
   }
 
